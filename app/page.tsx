@@ -344,6 +344,7 @@ export default function Home() {
     localStorage.setItem('kin-birthdate', dateStr);
     setBirthDate(dateStr);
     setShowOnboarding(false);
+    setActiveTab('mikin');
   };
 
   const today = new Date();
@@ -750,7 +751,9 @@ export default function Home() {
         </div>
       </nav>
 
-      <div className={`fixed bottom-16 left-0 right-0 text-center ${textMuted} text-xs py-1`}>{t.madeWith}</div>
+      <div className={`fixed bottom-16 left-0 right-0 text-center ${textMuted} text-xs py-1`}>
+        {t.today}: Kin {todayKin} {todaySello.nombre} • {t.madeWith}
+      </div>
     </div>
   );
 }
