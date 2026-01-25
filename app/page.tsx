@@ -57,6 +57,11 @@ const GAP_DAYS = [1,20,22,39,43,50,51,58,64,69,72,77,85,88,93,96,
 
 const CASTILLOS = ['Rojo del Este', 'Blanco del Norte', 'Azul del Oeste', 'Amarillo del Sur', 'Verde Central'];
 
+// Generar años para selector
+const currentYear = new Date().getFullYear();
+const YEARS = Array.from({ length: 100 }, (_, i) => currentYear - i);
+const MONTHS = ['Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'];
+
 // ═══════════════════════════════════════════════════════════════
 // FUNCIONES DE CÁLCULO
 // ═══════════════════════════════════════════════════════════════
@@ -111,6 +116,10 @@ function calcularKinCombinado(kin1: number, kin2: number): number {
   return ((kin1 + kin2 - 2) % 260) + 1;
 }
 
+function getDaysInMonth(year: number, month: number): number {
+  return new Date(year, month + 1, 0).getDate();
+}
+
 // ═══════════════════════════════════════════════════════════════
 // COMPONENTE PRINCIPAL
 // ═══════════════════════════════════════════════════════════════
@@ -118,15 +127,21 @@ function calcularKinCombinado(kin1: number, kin2: number): number {
 export default function Home() {
   const [birthDate, setBirthDate] = useState<string | null>(null);
   const [showOnboarding, setShowOnboarding] = useState(true);
-  const [inputDate, setInputDate] = useState('');
   const [activeTab, setActiveTab] = useState<'hoy' | 'mikin' | 'explorar'>('hoy');
+  
+  // Estados para fecha con selectores
+  const [selectedYear, setSelectedYear] = useState(1990);
+  const [selectedMonth, setSelectedMonth] = useState(0);
+  const [selectedDay, setSelectedDay] = useState(1);
   
   // Estados para AI
   const [dailyInterpretation, setDailyInterpretation] = useState<string | null>(null);
   const [loadingDaily, setLoadingDaily] = useState(false);
   
   // Estados para compatibilidad
-  const [compatDate, setCompatDate] = useState('');
+  const [compatYear, setCompatYear] = useState(1990);
+  const [compatMonth, setCompatMonth] = useState(0);
+  const [compatDay, setCompatDay] = useState(1);
   const [compatResult, setCompatResult] = useState<any>(null);
   const [loadingCompat, setLoadingCompat] = useState(false);
 
@@ -139,11 +154,10 @@ export default function Home() {
   }, []);
 
   const handleSaveBirthDate = () => {
-    if (inputDate) {
-      localStorage.setItem('kin-birthdate', inputDate);
-      setBirthDate(inputDate);
-      setShowOnboarding(false);
-    }
+    const dateStr = `${selectedYear}-${String(selectedMonth + 1).padStart(2, '0')}-${String(selectedDay).padStart(2, '0')}`;
+    localStorage.setItem('kin-birthdate', dateStr);
+    setBirthDate(dateStr);
+    setShowOnboarding(false);
   };
 
   const today = new Date();
@@ -194,9 +208,10 @@ export default function Home() {
 
   // Función para calcular compatibilidad
   const fetchCompatibility = async () => {
-    if (!myKin || !compatDate || loadingCompat) return;
+    if (!myKin || loadingCompat) return;
     setLoadingCompat(true);
-    const otherKin = calcularKin(new Date(compatDate));
+    const compatDate = new Date(compatYear, compatMonth, compatDay);
+    const otherKin = calcularKin(compatDate);
     const otherOraculo = calcularOraculo(otherKin);
     const kinCombinado = calcularKinCombinado(myKin, otherKin);
     const selloCombinado = SELLOS[obtenerSello(kinCombinado)];
@@ -229,6 +244,71 @@ export default function Home() {
     setLoadingCompat(false);
   };
 
+  // Limpiar interpretación
+  const clearInterpretation = () => {
+    setDailyInterpretation(null);
+  };
+
+  // Limpiar compatibilidad
+  const clearCompatibility = () => {
+    setCompatResult(null);
+  };
+
+  // ─────────────────────────────────────────────────────────────
+  // COMPONENTE SELECTOR DE FECHA
+  // ─────────────────────────────────────────────────────────────
+  const DateSelector = ({ 
+    year, setYear, month, setMonth, day, setDay, label 
+  }: { 
+    year: number, setYear: (y: number) => void,
+    month: number, setMonth: (m: number) => void,
+    day: number, setDay: (d: number) => void,
+    label: string
+  }) => {
+    const daysInMonth = getDaysInMonth(year, month);
+    const days = Array.from({ length: daysInMonth }, (_, i) => i + 1);
+    
+    // Ajustar día si excede los días del mes
+    useEffect(() => {
+      if (day > daysInMonth) setDay(daysInMonth);
+    }, [month, year, daysInMonth, day, setDay]);
+
+    return (
+      <div className="mb-4">
+        <label className="block text-maya-gold mb-2 text-sm">{label}</label>
+        <div className="grid grid-cols-3 gap-2">
+          <select
+            value={day}
+            onChange={(e) => setDay(Number(e.target.value))}
+            className="p-3 rounded-lg bg-maya-dark border border-maya-gold/30 text-white focus:border-maya-gold focus:outline-none"
+          >
+            {days.map(d => (
+              <option key={d} value={d}>{d}</option>
+            ))}
+          </select>
+          <select
+            value={month}
+            onChange={(e) => setMonth(Number(e.target.value))}
+            className="p-3 rounded-lg bg-maya-dark border border-maya-gold/30 text-white focus:border-maya-gold focus:outline-none text-sm"
+          >
+            {MONTHS.map((m, i) => (
+              <option key={i} value={i}>{m}</option>
+            ))}
+          </select>
+          <select
+            value={year}
+            onChange={(e) => setYear(Number(e.target.value))}
+            className="p-3 rounded-lg bg-maya-dark border border-maya-gold/30 text-white focus:border-maya-gold focus:outline-none"
+          >
+            {YEARS.map(y => (
+              <option key={y} value={y}>{y}</option>
+            ))}
+          </select>
+        </div>
+      </div>
+    );
+  };
+
   // ─────────────────────────────────────────────────────────────
   // ONBOARDING
   // ─────────────────────────────────────────────────────────────
@@ -245,19 +325,17 @@ export default function Home() {
           <p className="text-center text-gray-300 mb-6">
             Descubre tu energía según el calendario sagrado Tzolkin de 260 días.
           </p>
-          <div className="mb-6">
-            <label className="block text-maya-gold mb-2 text-sm">¿Cuándo naciste?</label>
-            <input
-              type="date"
-              value={inputDate}
-              onChange={(e) => setInputDate(e.target.value)}
-              className="w-full p-3 rounded-lg bg-maya-dark border border-maya-gold/30 text-white focus:border-maya-gold focus:outline-none"
-            />
-          </div>
+          
+          <DateSelector 
+            year={selectedYear} setYear={setSelectedYear}
+            month={selectedMonth} setMonth={setSelectedMonth}
+            day={selectedDay} setDay={setSelectedDay}
+            label="¿Cuándo naciste?"
+          />
+          
           <button
             onClick={handleSaveBirthDate}
-            disabled={!inputDate}
-            className="w-full py-3 rounded-lg bg-gradient-to-r from-maya-red to-maya-gold text-white font-bold disabled:opacity-50 disabled:cursor-not-allowed hover:opacity-90 transition"
+            className="w-full py-3 rounded-lg bg-gradient-to-r from-maya-red to-maya-gold text-white font-bold hover:opacity-90 transition"
           >
             Descubrir mi Kin ✨
           </button>
@@ -358,8 +436,16 @@ export default function Home() {
                 </p>
                 
                 {dailyInterpretation ? (
-                  <div className="mt-4 p-3 bg-maya-jade/10 border border-maya-jade/30 rounded-lg">
-                    <p className="text-gray-200 text-sm leading-relaxed">{dailyInterpretation}</p>
+                  <div className="mt-4">
+                    <div className="p-3 bg-maya-jade/10 border border-maya-jade/30 rounded-lg">
+                      <p className="text-gray-200 text-sm leading-relaxed">{dailyInterpretation}</p>
+                    </div>
+                    <button
+                      onClick={clearInterpretation}
+                      className="mt-3 w-full py-2 rounded-lg border border-gray-600 text-gray-400 text-sm hover:border-maya-gold hover:text-maya-gold transition"
+                    >
+                      ✕ Cerrar interpretación
+                    </button>
                   </div>
                 ) : (
                   <button
@@ -418,41 +504,52 @@ export default function Home() {
             {/* Compatibilidad */}
             <div className="maya-card p-4">
               <h3 className="text-maya-gold font-bold mb-4">💕 Compatibilidad de Kins</h3>
-              <p className="text-gray-400 text-sm mb-4">Ingresa la fecha de nacimiento de otra persona:</p>
-              <input
-                type="date"
-                value={compatDate}
-                onChange={(e) => { setCompatDate(e.target.value); setCompatResult(null); }}
-                className="w-full p-3 rounded-lg bg-maya-dark border border-maya-gold/30 text-white focus:border-maya-gold focus:outline-none mb-3"
-              />
-              <button
-                onClick={fetchCompatibility}
-                disabled={!compatDate || loadingCompat}
-                className="w-full py-2 rounded-lg bg-gradient-to-r from-maya-red to-maya-gold text-white font-medium hover:opacity-90 transition disabled:opacity-50"
-              >
-                {loadingCompat ? '🌀 Calculando...' : 'Ver compatibilidad'}
-              </button>
               
-              {compatResult && !compatResult.error && (
-                <div className="mt-4 p-4 bg-maya-dark/50 rounded-lg">
-                  <div className="flex items-center justify-center gap-4 mb-3">
-                    <div className="text-center">
-                      <div className="text-3xl">{mySello?.emoji}</div>
-                      <div className="text-xs text-gray-400">Tú</div>
+              {compatResult && !compatResult.error ? (
+                <div>
+                  <div className="p-4 bg-maya-dark/50 rounded-lg">
+                    <div className="flex items-center justify-center gap-4 mb-3">
+                      <div className="text-center">
+                        <div className="text-3xl">{mySello?.emoji}</div>
+                        <div className="text-xs text-gray-400">Tú</div>
+                      </div>
+                      <div className="text-maya-gold text-2xl">💕</div>
+                      <div className="text-center">
+                        <div className="text-3xl">{compatResult.otherSello.emoji}</div>
+                        <div className="text-xs text-gray-400">Kin {compatResult.otherKin}</div>
+                      </div>
+                      <div className="text-gray-500">=</div>
+                      <div className="text-center">
+                        <div className="text-3xl glyph-glow">{compatResult.selloCombinado.emoji}</div>
+                        <div className="text-xs text-maya-jade">Kin {compatResult.kinCombinado}</div>
+                      </div>
                     </div>
-                    <div className="text-maya-gold text-2xl">💕</div>
-                    <div className="text-center">
-                      <div className="text-3xl">{compatResult.otherSello.emoji}</div>
-                      <div className="text-xs text-gray-400">Kin {compatResult.otherKin}</div>
-                    </div>
-                    <div className="text-gray-500">=</div>
-                    <div className="text-center">
-                      <div className="text-3xl glyph-glow">{compatResult.selloCombinado.emoji}</div>
-                      <div className="text-xs text-maya-jade">Kin {compatResult.kinCombinado}</div>
-                    </div>
+                    <p className="text-gray-200 text-sm leading-relaxed">{compatResult.interpretation}</p>
                   </div>
-                  <p className="text-gray-200 text-sm leading-relaxed">{compatResult.interpretation}</p>
+                  <button
+                    onClick={clearCompatibility}
+                    className="mt-3 w-full py-2 rounded-lg border border-gray-600 text-gray-400 text-sm hover:border-maya-gold hover:text-maya-gold transition"
+                  >
+                    ✕ Nueva consulta
+                  </button>
                 </div>
+              ) : (
+                <>
+                  <p className="text-gray-400 text-sm mb-4">Fecha de nacimiento de otra persona:</p>
+                  <DateSelector 
+                    year={compatYear} setYear={setCompatYear}
+                    month={compatMonth} setMonth={setCompatMonth}
+                    day={compatDay} setDay={setCompatDay}
+                    label=""
+                  />
+                  <button
+                    onClick={fetchCompatibility}
+                    disabled={loadingCompat}
+                    className="w-full py-2 rounded-lg bg-gradient-to-r from-maya-red to-maya-gold text-white font-medium hover:opacity-90 transition disabled:opacity-50"
+                  >
+                    {loadingCompat ? '🌀 Calculando...' : 'Ver compatibilidad'}
+                  </button>
+                </>
               )}
             </div>
 
