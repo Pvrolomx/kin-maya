@@ -1,5 +1,6 @@
 'use client';
 import { useState, useEffect } from 'react';
+import Image from 'next/image';
 
 // ═══════════════════════════════════════════════════════════════
 // TRADUCCIONES
@@ -91,53 +92,53 @@ const TRANSLATIONS = {
 };
 
 // ═══════════════════════════════════════════════════════════════
-// DATOS MAYAS
+// DATOS MAYAS CON ICONOS
 // ═══════════════════════════════════════════════════════════════
 
 const SELLOS = {
   es: [
-    { nombre: 'Dragón', emoji: '🐉', color: 'red', poder: 'Nacimiento', accion: 'Nutrir', esencia: 'Ser' },
-    { nombre: 'Viento', emoji: '🌬️', color: 'white', poder: 'Espíritu', accion: 'Comunicar', esencia: 'Aliento' },
-    { nombre: 'Noche', emoji: '🌙', color: 'blue', poder: 'Abundancia', accion: 'Soñar', esencia: 'Intuición' },
-    { nombre: 'Semilla', emoji: '🌱', color: 'yellow', poder: 'Florecimiento', accion: 'Apuntar', esencia: 'Conciencia' },
-    { nombre: 'Serpiente', emoji: '🐍', color: 'red', poder: 'Fuerza Vital', accion: 'Sobrevivir', esencia: 'Instinto' },
-    { nombre: 'Enlazador', emoji: '💀', color: 'white', poder: 'Muerte', accion: 'Igualar', esencia: 'Oportunidad' },
-    { nombre: 'Mano', emoji: '✋', color: 'blue', poder: 'Realización', accion: 'Conocer', esencia: 'Sanación' },
-    { nombre: 'Estrella', emoji: '⭐', color: 'yellow', poder: 'Elegancia', accion: 'Embellecer', esencia: 'Arte' },
-    { nombre: 'Luna', emoji: '🌊', color: 'red', poder: 'Agua Universal', accion: 'Purificar', esencia: 'Flujo' },
-    { nombre: 'Perro', emoji: '🐕', color: 'white', poder: 'Corazón', accion: 'Amar', esencia: 'Lealtad' },
-    { nombre: 'Mono', emoji: '🐒', color: 'blue', poder: 'Magia', accion: 'Jugar', esencia: 'Ilusión' },
-    { nombre: 'Humano', emoji: '🧑', color: 'yellow', poder: 'Libre Albedrío', accion: 'Influenciar', esencia: 'Sabiduría' },
-    { nombre: 'Caminante', emoji: '🚶', color: 'red', poder: 'Espacio', accion: 'Explorar', esencia: 'Vigilia' },
-    { nombre: 'Mago', emoji: '🧙', color: 'white', poder: 'Atemporalidad', accion: 'Encantar', esencia: 'Receptividad' },
-    { nombre: 'Águila', emoji: '🦅', color: 'blue', poder: 'Visión', accion: 'Crear', esencia: 'Mente' },
-    { nombre: 'Guerrero', emoji: '⚔️', color: 'yellow', poder: 'Inteligencia', accion: 'Cuestionar', esencia: 'Intrepidez' },
-    { nombre: 'Tierra', emoji: '🌍', color: 'red', poder: 'Navegación', accion: 'Evolucionar', esencia: 'Sincronicidad' },
-    { nombre: 'Espejo', emoji: '🪞', color: 'white', poder: 'Sin Fin', accion: 'Reflejar', esencia: 'Orden' },
-    { nombre: 'Tormenta', emoji: '⛈️', color: 'blue', poder: 'Autogeneración', accion: 'Catalizar', esencia: 'Energía' },
-    { nombre: 'Sol', emoji: '☀️', color: 'yellow', poder: 'Fuego Universal', accion: 'Iluminar', esencia: 'Vida' },
+    { nombre: 'Dragón', icon: 'dragon', color: 'red', poder: 'Nacimiento', accion: 'Nutrir', esencia: 'Ser' },
+    { nombre: 'Viento', icon: 'wind', color: 'white', poder: 'Espíritu', accion: 'Comunicar', esencia: 'Aliento' },
+    { nombre: 'Noche', icon: 'night', color: 'blue', poder: 'Abundancia', accion: 'Soñar', esencia: 'Intuición' },
+    { nombre: 'Semilla', icon: 'seed', color: 'yellow', poder: 'Florecimiento', accion: 'Apuntar', esencia: 'Conciencia' },
+    { nombre: 'Serpiente', icon: 'serpent', color: 'red', poder: 'Fuerza Vital', accion: 'Sobrevivir', esencia: 'Instinto' },
+    { nombre: 'Enlazador', icon: 'worldbridger', color: 'white', poder: 'Muerte', accion: 'Igualar', esencia: 'Oportunidad' },
+    { nombre: 'Mano', icon: 'hand', color: 'blue', poder: 'Realización', accion: 'Conocer', esencia: 'Sanación' },
+    { nombre: 'Estrella', icon: 'star', color: 'yellow', poder: 'Elegancia', accion: 'Embellecer', esencia: 'Arte' },
+    { nombre: 'Luna', icon: 'moon', color: 'red', poder: 'Agua Universal', accion: 'Purificar', esencia: 'Flujo' },
+    { nombre: 'Perro', icon: 'dog', color: 'white', poder: 'Corazón', accion: 'Amar', esencia: 'Lealtad' },
+    { nombre: 'Mono', icon: 'monkey', color: 'blue', poder: 'Magia', accion: 'Jugar', esencia: 'Ilusión' },
+    { nombre: 'Humano', icon: 'human', color: 'yellow', poder: 'Libre Albedrío', accion: 'Influenciar', esencia: 'Sabiduría' },
+    { nombre: 'Caminante', icon: 'skywalker', color: 'red', poder: 'Espacio', accion: 'Explorar', esencia: 'Vigilia' },
+    { nombre: 'Mago', icon: 'wizard', color: 'white', poder: 'Atemporalidad', accion: 'Encantar', esencia: 'Receptividad' },
+    { nombre: 'Águila', icon: 'eagle', color: 'blue', poder: 'Visión', accion: 'Crear', esencia: 'Mente' },
+    { nombre: 'Guerrero', icon: 'warrior', color: 'yellow', poder: 'Inteligencia', accion: 'Cuestionar', esencia: 'Intrepidez' },
+    { nombre: 'Tierra', icon: 'earth', color: 'red', poder: 'Navegación', accion: 'Evolucionar', esencia: 'Sincronicidad' },
+    { nombre: 'Espejo', icon: 'mirror', color: 'white', poder: 'Sin Fin', accion: 'Reflejar', esencia: 'Orden' },
+    { nombre: 'Tormenta', icon: 'storm', color: 'blue', poder: 'Autogeneración', accion: 'Catalizar', esencia: 'Energía' },
+    { nombre: 'Sol', icon: 'sun', color: 'yellow', poder: 'Fuego Universal', accion: 'Iluminar', esencia: 'Vida' },
   ],
   en: [
-    { nombre: 'Dragon', emoji: '🐉', color: 'red', poder: 'Birth', accion: 'Nurture', esencia: 'Being' },
-    { nombre: 'Wind', emoji: '🌬️', color: 'white', poder: 'Spirit', accion: 'Communicate', esencia: 'Breath' },
-    { nombre: 'Night', emoji: '🌙', color: 'blue', poder: 'Abundance', accion: 'Dream', esencia: 'Intuition' },
-    { nombre: 'Seed', emoji: '🌱', color: 'yellow', poder: 'Flowering', accion: 'Target', esencia: 'Awareness' },
-    { nombre: 'Serpent', emoji: '🐍', color: 'red', poder: 'Life Force', accion: 'Survive', esencia: 'Instinct' },
-    { nombre: 'Worldbridger', emoji: '💀', color: 'white', poder: 'Death', accion: 'Equalize', esencia: 'Opportunity' },
-    { nombre: 'Hand', emoji: '✋', color: 'blue', poder: 'Accomplishment', accion: 'Know', esencia: 'Healing' },
-    { nombre: 'Star', emoji: '⭐', color: 'yellow', poder: 'Elegance', accion: 'Beautify', esencia: 'Art' },
-    { nombre: 'Moon', emoji: '🌊', color: 'red', poder: 'Universal Water', accion: 'Purify', esencia: 'Flow' },
-    { nombre: 'Dog', emoji: '🐕', color: 'white', poder: 'Heart', accion: 'Love', esencia: 'Loyalty' },
-    { nombre: 'Monkey', emoji: '🐒', color: 'blue', poder: 'Magic', accion: 'Play', esencia: 'Illusion' },
-    { nombre: 'Human', emoji: '🧑', color: 'yellow', poder: 'Free Will', accion: 'Influence', esencia: 'Wisdom' },
-    { nombre: 'Skywalker', emoji: '🚶', color: 'red', poder: 'Space', accion: 'Explore', esencia: 'Wakefulness' },
-    { nombre: 'Wizard', emoji: '🧙', color: 'white', poder: 'Timelessness', accion: 'Enchant', esencia: 'Receptivity' },
-    { nombre: 'Eagle', emoji: '🦅', color: 'blue', poder: 'Vision', accion: 'Create', esencia: 'Mind' },
-    { nombre: 'Warrior', emoji: '⚔️', color: 'yellow', poder: 'Intelligence', accion: 'Question', esencia: 'Fearlessness' },
-    { nombre: 'Earth', emoji: '🌍', color: 'red', poder: 'Navigation', accion: 'Evolve', esencia: 'Synchronicity' },
-    { nombre: 'Mirror', emoji: '🪞', color: 'white', poder: 'Endlessness', accion: 'Reflect', esencia: 'Order' },
-    { nombre: 'Storm', emoji: '⛈️', color: 'blue', poder: 'Self-Generation', accion: 'Catalyze', esencia: 'Energy' },
-    { nombre: 'Sun', emoji: '☀️', color: 'yellow', poder: 'Universal Fire', accion: 'Enlighten', esencia: 'Life' },
+    { nombre: 'Dragon', icon: 'dragon', color: 'red', poder: 'Birth', accion: 'Nurture', esencia: 'Being' },
+    { nombre: 'Wind', icon: 'wind', color: 'white', poder: 'Spirit', accion: 'Communicate', esencia: 'Breath' },
+    { nombre: 'Night', icon: 'night', color: 'blue', poder: 'Abundance', accion: 'Dream', esencia: 'Intuition' },
+    { nombre: 'Seed', icon: 'seed', color: 'yellow', poder: 'Flowering', accion: 'Target', esencia: 'Awareness' },
+    { nombre: 'Serpent', icon: 'serpent', color: 'red', poder: 'Life Force', accion: 'Survive', esencia: 'Instinct' },
+    { nombre: 'Worldbridger', icon: 'worldbridger', color: 'white', poder: 'Death', accion: 'Equalize', esencia: 'Opportunity' },
+    { nombre: 'Hand', icon: 'hand', color: 'blue', poder: 'Accomplishment', accion: 'Know', esencia: 'Healing' },
+    { nombre: 'Star', icon: 'star', color: 'yellow', poder: 'Elegance', accion: 'Beautify', esencia: 'Art' },
+    { nombre: 'Moon', icon: 'moon', color: 'red', poder: 'Universal Water', accion: 'Purify', esencia: 'Flow' },
+    { nombre: 'Dog', icon: 'dog', color: 'white', poder: 'Heart', accion: 'Love', esencia: 'Loyalty' },
+    { nombre: 'Monkey', icon: 'monkey', color: 'blue', poder: 'Magic', accion: 'Play', esencia: 'Illusion' },
+    { nombre: 'Human', icon: 'human', color: 'yellow', poder: 'Free Will', accion: 'Influence', esencia: 'Wisdom' },
+    { nombre: 'Skywalker', icon: 'skywalker', color: 'red', poder: 'Space', accion: 'Explore', esencia: 'Wakefulness' },
+    { nombre: 'Wizard', icon: 'wizard', color: 'white', poder: 'Timelessness', accion: 'Enchant', esencia: 'Receptivity' },
+    { nombre: 'Eagle', icon: 'eagle', color: 'blue', poder: 'Vision', accion: 'Create', esencia: 'Mind' },
+    { nombre: 'Warrior', icon: 'warrior', color: 'yellow', poder: 'Intelligence', accion: 'Question', esencia: 'Fearlessness' },
+    { nombre: 'Earth', icon: 'earth', color: 'red', poder: 'Navigation', accion: 'Evolve', esencia: 'Synchronicity' },
+    { nombre: 'Mirror', icon: 'mirror', color: 'white', poder: 'Endlessness', accion: 'Reflect', esencia: 'Order' },
+    { nombre: 'Storm', icon: 'storm', color: 'blue', poder: 'Self-Generation', accion: 'Catalyze', esencia: 'Energy' },
+    { nombre: 'Sun', icon: 'sun', color: 'yellow', poder: 'Universal Fire', accion: 'Enlighten', esencia: 'Life' },
   ]
 };
 
@@ -255,6 +256,20 @@ function calcularKinCombinado(kin1: number, kin2: number): number {
 function getDaysInMonth(year: number, month: number): number {
   return new Date(year, month + 1, 0).getDate();
 }
+
+// ═══════════════════════════════════════════════════════════════
+// COMPONENTE DE ICONO
+// ═══════════════════════════════════════════════════════════════
+
+const SealIcon = ({ icon, size = 64, className = '' }: { icon: string; size?: number; className?: string }) => (
+  <Image
+    src={`/icons/${icon}.png`}
+    alt={icon}
+    width={size}
+    height={size}
+    className={`object-contain ${className}`}
+  />
+);
 
 // ═══════════════════════════════════════════════════════════════
 // COMPONENTE PRINCIPAL
@@ -462,7 +477,9 @@ export default function Home() {
         <SettingsBar />
         <div className={`${cardBg} p-8 max-w-md w-full animate-fade-in`}>
           <div className="text-center mb-8">
-            <div className="text-6xl mb-4 glyph-glow">🌀</div>
+            <div className="mb-4 flex justify-center">
+              <SealIcon icon="sun" size={80} className="glyph-glow" />
+            </div>
             <h1 className="text-3xl font-bold text-maya-gold mb-2">{t.title}</h1>
             <p className={textMuted}>{t.subtitle}</p>
           </div>
@@ -484,10 +501,13 @@ export default function Home() {
   const OracleCard = ({ position, data, size = 'normal' }: any) => {
     const color = COLORES[data.sello.color as keyof typeof COLORES];
     const isLarge = size === 'large';
+    const iconSize = isLarge ? 56 : 40;
     return (
       <div className={`${color.bg} ${color.border} border rounded-lg p-2 text-center ${isLarge ? 'p-4' : ''}`}>
-        <div className={`${isLarge ? 'text-4xl' : 'text-2xl'} ${isLarge ? 'glyph-glow' : ''}`}>{data.sello.emoji}</div>
-        <div className={`${color.text} ${isLarge ? 'text-sm' : 'text-xs'} font-medium`}>{data.tono.num} {data.sello.nombre}</div>
+        <div className={`flex justify-center ${isLarge ? 'glyph-glow' : ''}`}>
+          <SealIcon icon={data.sello.icon} size={iconSize} />
+        </div>
+        <div className={`${color.text} ${isLarge ? 'text-sm' : 'text-xs'} font-medium mt-1`}>{data.tono.num} {data.sello.nombre}</div>
         <div className={`${textMuted} text-xs`}>{position}</div>
       </div>
     );
@@ -514,7 +534,9 @@ export default function Home() {
         {activeTab === 'hoy' && (
           <div className="space-y-6 animate-fade-in">
             <div className={`${cardBg} p-6 text-center`}>
-              <div className="text-7xl glyph-glow mb-4">{todaySello.emoji}</div>
+              <div className="flex justify-center mb-4">
+                <SealIcon icon={todaySello.icon} size={96} className="glyph-glow" />
+              </div>
               <h2 className={`text-2xl font-bold ${todayColor.text}`}>{todayTono.nombre} {todaySello.nombre}</h2>
               <p className={`${textMuted} mt-1`}>Kin {todayKin} • {t.wave} {wavespell} • {t.castle} {castillos[castillo - 1]}</p>
               <div className="maya-greca my-4"></div>
@@ -539,9 +561,14 @@ export default function Home() {
             {myKin && mySello && (
               <div className={`${cardBg} p-4`}>
                 <h3 className="text-maya-gold font-bold mb-2">{t.yourConnection}</h3>
-                <p className={`${textMuted} text-sm`}>
-                  {t.yourEnergy} <span className="text-maya-jade">{mySello.emoji} {mySello.nombre}</span> (Kin {myKin}) {t.meetsToday} <span className={todayColor.text}>{todaySello.emoji} {todaySello.nombre}</span>.
-                </p>
+                <div className="flex items-center gap-2 mb-2">
+                  <span className={textMuted}>{t.yourEnergy}</span>
+                  <SealIcon icon={mySello.icon} size={24} />
+                  <span className="text-maya-jade">{mySello.nombre}</span>
+                  <span className={textMuted}>(Kin {myKin}) {t.meetsToday}</span>
+                  <SealIcon icon={todaySello.icon} size={24} />
+                  <span className={todayColor.text}>{todaySello.nombre}</span>
+                </div>
                 {dailyInterpretation ? (
                   <div className="mt-4">
                     <div className={`p-3 ${darkMode ? 'bg-maya-jade/10 border-maya-jade/30' : 'bg-green-50 border-green-200'} border rounded-lg`}>
@@ -564,7 +591,9 @@ export default function Home() {
         {activeTab === 'mikin' && myOraculo && mySello && myTono && (
           <div className="space-y-6 animate-fade-in">
             <div className={`${cardBg} p-6 text-center`}>
-              <div className="text-7xl glyph-glow mb-4">{mySello.emoji}</div>
+              <div className="flex justify-center mb-4">
+                <SealIcon icon={mySello.icon} size={96} className="glyph-glow" />
+              </div>
               <h2 className={`text-2xl font-bold ${COLORES[mySello.color as keyof typeof COLORES].text}`}>{myTono.nombre} {mySello.nombre}</h2>
               <p className={`${textMuted} mt-1`}>Kin {myKin} • {t.yourSignature}</p>
               <div className="maya-greca my-4"></div>
@@ -599,11 +628,20 @@ export default function Home() {
                 <div>
                   <div className={`p-4 ${darkMode ? 'bg-maya-dark/50' : 'bg-gray-50'} rounded-lg`}>
                     <div className="flex items-center justify-center gap-4 mb-3">
-                      <div className="text-center"><div className="text-3xl">{mySello?.emoji}</div><div className={`text-xs ${textMuted}`}>{lang === 'es' ? 'Tú' : 'You'}</div></div>
+                      <div className="text-center">
+                        <SealIcon icon={mySello?.icon} size={40} />
+                        <div className={`text-xs ${textMuted}`}>{lang === 'es' ? 'Tú' : 'You'}</div>
+                      </div>
                       <div className="text-maya-gold text-2xl">💕</div>
-                      <div className="text-center"><div className="text-3xl">{compatResult.otherSello.emoji}</div><div className={`text-xs ${textMuted}`}>Kin {compatResult.otherKin}</div></div>
+                      <div className="text-center">
+                        <SealIcon icon={compatResult.otherSello.icon} size={40} />
+                        <div className={`text-xs ${textMuted}`}>Kin {compatResult.otherKin}</div>
+                      </div>
                       <div className={textMuted}>=</div>
-                      <div className="text-center"><div className="text-3xl glyph-glow">{compatResult.selloCombinado.emoji}</div><div className="text-xs text-maya-jade">Kin {compatResult.kinCombinado}</div></div>
+                      <div className="text-center">
+                        <SealIcon icon={compatResult.selloCombinado.icon} size={40} className="glyph-glow" />
+                        <div className="text-xs text-maya-jade">Kin {compatResult.kinCombinado}</div>
+                      </div>
                     </div>
                     <p className={`${textMain} text-sm leading-relaxed`}>{compatResult.interpretation}</p>
                   </div>
@@ -626,8 +664,8 @@ export default function Home() {
               <div className="grid grid-cols-4 gap-2">
                 {sellos.map((sello, i) => (
                   <div key={i} className={`${COLORES[sello.color as keyof typeof COLORES].bg} p-2 rounded text-center`}>
-                    <div className="text-2xl">{sello.emoji}</div>
-                    <div className={`text-xs ${textMain}`}>{sello.nombre}</div>
+                    <SealIcon icon={sello.icon} size={32} />
+                    <div className={`text-xs ${textMain} mt-1`}>{sello.nombre}</div>
                   </div>
                 ))}
               </div>
@@ -651,13 +689,15 @@ export default function Home() {
       <nav className={`fixed bottom-0 left-0 right-0 ${darkMode ? 'bg-maya-dark/95' : 'bg-white/95'} backdrop-blur border-t ${borderColor}`}>
         <div className="flex justify-around max-w-lg mx-auto">
           {[
-            { id: 'hoy', icon: '🌀', label: t.today },
-            { id: 'mikin', icon: '👤', label: t.myKin },
-            { id: 'explorar', icon: '🔮', label: t.explore },
+            { id: 'hoy', icon: 'sun', label: t.today },
+            { id: 'mikin', icon: mySello?.icon || 'human', label: t.myKin },
+            { id: 'explorar', icon: 'wizard', label: t.explore },
           ].map((tab) => (
             <button key={tab.id} onClick={() => setActiveTab(tab.id as any)} className={`flex-1 py-3 text-center transition ${activeTab === tab.id ? 'text-maya-gold' : `${textMuted} hover:text-maya-gold`}`}>
-              <div className="text-xl">{tab.icon}</div>
-              <div className="text-xs">{tab.label}</div>
+              <div className="flex justify-center">
+                <SealIcon icon={tab.icon} size={24} className={activeTab === tab.id ? 'opacity-100' : 'opacity-60'} />
+              </div>
+              <div className="text-xs mt-1">{tab.label}</div>
             </button>
           ))}
         </div>
