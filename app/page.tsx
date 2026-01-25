@@ -61,7 +61,7 @@ const CASTILLOS = ['Rojo del Este', 'Blanco del Norte', 'Azul del Oeste', 'Amari
 // FUNCIONES DE CÁLCULO
 // ═══════════════════════════════════════════════════════════════
 
-const BASE_DATE = new Date(1987, 6, 26); // 26 julio 1987 = Kin 1
+const BASE_DATE = new Date(1987, 6, 26);
 
 function calcularKin(fecha: Date): number {
   const diff = Math.floor((fecha.getTime() - BASE_DATE.getTime()) / 86400000);
@@ -79,21 +79,11 @@ function obtenerTono(kin: number): number {
 function calcularOraculo(kin: number) {
   const selloIdx = obtenerSello(kin);
   const tonoIdx = obtenerTono(kin);
-  
-  // Análogo: +19 mod 20
   const analogoIdx = (selloIdx + 19) % 20;
-  
-  // Antípoda: +10 mod 20
   const antipodaIdx = (selloIdx + 10) % 20;
-  
-  // Oculto: 19 - sello
   const ocultoIdx = (19 - selloIdx + 20) % 20;
-  
-  // Guía: mismo color, offset según tono
   const guiaOffsets = [0, 12, 4, 16, 8, 0, 12, 4, 16, 8, 0, 12, 4];
   const guiaIdx = (selloIdx + guiaOffsets[tonoIdx]) % 20;
-  
-  // Tono oculto: 14 - tono (ajustado a 0-12)
   const tonoOcultoIdx = (13 - tonoIdx) % 13;
   
   return {
@@ -117,6 +107,10 @@ function obtenerCastillo(kin: number): number {
   return Math.ceil(kin / 52);
 }
 
+function calcularKinCombinado(kin1: number, kin2: number): number {
+  return ((kin1 + kin2 - 2) % 260) + 1;
+}
+
 // ═══════════════════════════════════════════════════════════════
 // COMPONENTE PRINCIPAL
 // ═══════════════════════════════════════════════════════════════
@@ -126,6 +120,15 @@ export default function Home() {
   const [showOnboarding, setShowOnboarding] = useState(true);
   const [inputDate, setInputDate] = useState('');
   const [activeTab, setActiveTab] = useState<'hoy' | 'mikin' | 'explorar'>('hoy');
+  
+  // Estados para AI
+  const [dailyInterpretation, setDailyInterpretation] = useState<string | null>(null);
+  const [loadingDaily, setLoadingDaily] = useState(false);
+  
+  // Estados para compatibilidad
+  const [compatDate, setCompatDate] = useState('');
+  const [compatResult, setCompatResult] = useState<any>(null);
+  const [loadingCompat, setLoadingCompat] = useState(false);
 
   useEffect(() => {
     const saved = localStorage.getItem('kin-birthdate');
@@ -153,13 +156,78 @@ export default function Home() {
   const wavespell = obtenerWavespell(todayKin);
   const castillo = obtenerCastillo(todayKin);
 
-  let myKin = 0, myOraculo = null, mySello = null, myTono = null;
+  let myKin = 0, myOraculo: any = null, mySello: any = null, myTono: any = null;
   if (birthDate) {
     myKin = calcularKin(new Date(birthDate));
     myOraculo = calcularOraculo(myKin);
     mySello = myOraculo.destino.sello;
     myTono = myOraculo.destino.tono;
   }
+
+  // Función para pedir interpretación diaria
+  const fetchDailyInterpretation = async () => {
+    if (!myKin || loadingDaily) return;
+    setLoadingDaily(true);
+    try {
+      const res = await fetch('/api/interpret', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          type: 'daily',
+          myKin, mySello: mySello.nombre, myTono: myTono.nombre,
+          todayKin, todaySello: todaySello.nombre, todayTono: todayTono.nombre,
+          oraculo: {
+            guia: todayOraculo.guia.sello.nombre,
+            analogo: todayOraculo.analogo.sello.nombre,
+            antipoda: todayOraculo.antipoda.sello.nombre,
+            oculto: todayOraculo.oculto.sello.nombre,
+          }
+        }),
+      });
+      const data = await res.json();
+      setDailyInterpretation(data.interpretation);
+    } catch (e) {
+      setDailyInterpretation('No se pudo conectar con el oráculo.');
+    }
+    setLoadingDaily(false);
+  };
+
+  // Función para calcular compatibilidad
+  const fetchCompatibility = async () => {
+    if (!myKin || !compatDate || loadingCompat) return;
+    setLoadingCompat(true);
+    const otherKin = calcularKin(new Date(compatDate));
+    const otherOraculo = calcularOraculo(otherKin);
+    const kinCombinado = calcularKinCombinado(myKin, otherKin);
+    const selloCombinado = SELLOS[obtenerSello(kinCombinado)];
+    
+    try {
+      const res = await fetch('/api/interpret', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          type: 'compatibility',
+          myKin, mySello: mySello.nombre, myTono: myTono.nombre,
+          todayKin: otherKin, 
+          todaySello: otherOraculo.destino.sello.nombre, 
+          todayTono: otherOraculo.destino.tono.nombre,
+          oraculo: { kinCombinado, selloCombinado: selloCombinado.nombre }
+        }),
+      });
+      const data = await res.json();
+      setCompatResult({
+        otherKin,
+        otherSello: otherOraculo.destino.sello,
+        otherTono: otherOraculo.destino.tono,
+        kinCombinado,
+        selloCombinado,
+        interpretation: data.interpretation,
+      });
+    } catch (e) {
+      setCompatResult({ error: 'No se pudo conectar con el oráculo.' });
+    }
+    setLoadingCompat(false);
+  };
 
   // ─────────────────────────────────────────────────────────────
   // ONBOARDING
@@ -173,17 +241,12 @@ export default function Home() {
             <h1 className="text-3xl font-bold text-maya-gold mb-2">KIN</h1>
             <p className="text-gray-400">Tu Guía Maya Diaria</p>
           </div>
-          
           <div className="maya-greca mb-6"></div>
-          
           <p className="text-center text-gray-300 mb-6">
             Descubre tu energía según el calendario sagrado Tzolkin de 260 días.
           </p>
-          
           <div className="mb-6">
-            <label className="block text-maya-gold mb-2 text-sm">
-              ¿Cuándo naciste?
-            </label>
+            <label className="block text-maya-gold mb-2 text-sm">¿Cuándo naciste?</label>
             <input
               type="date"
               value={inputDate}
@@ -191,7 +254,6 @@ export default function Home() {
               className="w-full p-3 rounded-lg bg-maya-dark border border-maya-gold/30 text-white focus:border-maya-gold focus:outline-none"
             />
           </div>
-          
           <button
             onClick={handleSaveBirthDate}
             disabled={!inputDate}
@@ -200,10 +262,7 @@ export default function Home() {
             Descubrir mi Kin ✨
           </button>
         </div>
-        
-        <p className="text-gray-500 text-xs mt-8">
-          Hecho con 🧡 por duendes.app 2026
-        </p>
+        <p className="text-gray-500 text-xs mt-8">Hecho con 🧡 por duendes.app 2026</p>
       </div>
     );
   }
@@ -249,7 +308,6 @@ export default function Home() {
         )}
       </header>
 
-      {/* Content based on tab */}
       <main className="p-4 max-w-lg mx-auto">
         
         {activeTab === 'hoy' && (
@@ -282,25 +340,15 @@ export default function Home() {
             <div className="maya-card p-4">
               <h3 className="text-maya-gold font-bold mb-4 text-center">Oráculo del Día</h3>
               <div className="oracle-cross">
-                <div className="oracle-guia">
-                  <OracleCard position="Guía" data={todayOraculo.guia} />
-                </div>
-                <div className="oracle-antipoda">
-                  <OracleCard position="Desafío" data={todayOraculo.antipoda} />
-                </div>
-                <div className="oracle-destino">
-                  <OracleCard position="Destino" data={todayOraculo.destino} size="large" />
-                </div>
-                <div className="oracle-analogo">
-                  <OracleCard position="Soporte" data={todayOraculo.analogo} />
-                </div>
-                <div className="oracle-oculto">
-                  <OracleCard position="Oculto" data={todayOraculo.oculto} />
-                </div>
+                <div className="oracle-guia"><OracleCard position="Guía" data={todayOraculo.guia} /></div>
+                <div className="oracle-antipoda"><OracleCard position="Desafío" data={todayOraculo.antipoda} /></div>
+                <div className="oracle-destino"><OracleCard position="Destino" data={todayOraculo.destino} size="large" /></div>
+                <div className="oracle-analogo"><OracleCard position="Soporte" data={todayOraculo.analogo} /></div>
+                <div className="oracle-oculto"><OracleCard position="Oculto" data={todayOraculo.oculto} /></div>
               </div>
             </div>
 
-            {/* Tu conexión hoy */}
+            {/* Tu conexión hoy + Interpretación AI */}
             {myKin && mySello && (
               <div className="maya-card p-4">
                 <h3 className="text-maya-gold font-bold mb-2">Tu Conexión Hoy</h3>
@@ -308,9 +356,20 @@ export default function Home() {
                   Tu energía <span className="text-maya-jade">{mySello.emoji} {mySello.nombre}</span> (Kin {myKin}) 
                   se encuentra hoy con <span className={todayColor.text}>{todaySello.emoji} {todaySello.nombre}</span>.
                 </p>
-                <p className="text-gray-400 text-xs mt-2">
-                  Kin combinado: {((myKin + todayKin - 2) % 260) + 1}
-                </p>
+                
+                {dailyInterpretation ? (
+                  <div className="mt-4 p-3 bg-maya-jade/10 border border-maya-jade/30 rounded-lg">
+                    <p className="text-gray-200 text-sm leading-relaxed">{dailyInterpretation}</p>
+                  </div>
+                ) : (
+                  <button
+                    onClick={fetchDailyInterpretation}
+                    disabled={loadingDaily}
+                    className="mt-4 w-full py-2 rounded-lg bg-gradient-to-r from-maya-jade/80 to-maya-blue/80 text-white text-sm font-medium hover:opacity-90 transition disabled:opacity-50"
+                  >
+                    {loadingDaily ? '🌀 Consultando oráculo...' : '✨ Pedir interpretación personalizada'}
+                  </button>
+                )}
               </div>
             )}
           </div>
@@ -324,9 +383,7 @@ export default function Home() {
                 {myTono.nombre} {mySello.nombre}
               </h2>
               <p className="text-gray-400 mt-1">Kin {myKin} • Tu Firma Galáctica</p>
-              
               <div className="maya-greca my-4"></div>
-              
               <div className="text-left space-y-2 text-sm">
                 <p><span className="text-maya-gold">Poder:</span> {mySello.poder}</p>
                 <p><span className="text-maya-gold">Acción:</span> {mySello.accion}</p>
@@ -338,30 +395,16 @@ export default function Home() {
             <div className="maya-card p-4">
               <h3 className="text-maya-gold font-bold mb-4 text-center">Tu Oráculo de Nacimiento</h3>
               <div className="oracle-cross">
-                <div className="oracle-guia">
-                  <OracleCard position="Guía" data={myOraculo.guia} />
-                </div>
-                <div className="oracle-antipoda">
-                  <OracleCard position="Desafío" data={myOraculo.antipoda} />
-                </div>
-                <div className="oracle-destino">
-                  <OracleCard position="Destino" data={myOraculo.destino} size="large" />
-                </div>
-                <div className="oracle-analogo">
-                  <OracleCard position="Soporte" data={myOraculo.analogo} />
-                </div>
-                <div className="oracle-oculto">
-                  <OracleCard position="Oculto" data={myOraculo.oculto} />
-                </div>
+                <div className="oracle-guia"><OracleCard position="Guía" data={myOraculo.guia} /></div>
+                <div className="oracle-antipoda"><OracleCard position="Desafío" data={myOraculo.antipoda} /></div>
+                <div className="oracle-destino"><OracleCard position="Destino" data={myOraculo.destino} size="large" /></div>
+                <div className="oracle-analogo"><OracleCard position="Soporte" data={myOraculo.analogo} /></div>
+                <div className="oracle-oculto"><OracleCard position="Oculto" data={myOraculo.oculto} /></div>
               </div>
             </div>
 
             <button
-              onClick={() => {
-                localStorage.removeItem('kin-birthdate');
-                setShowOnboarding(true);
-                setBirthDate(null);
-              }}
+              onClick={() => { localStorage.removeItem('kin-birthdate'); setShowOnboarding(true); setBirthDate(null); }}
               className="w-full py-2 text-gray-500 text-sm hover:text-maya-red transition"
             >
               Cambiar fecha de nacimiento
@@ -371,6 +414,49 @@ export default function Home() {
 
         {activeTab === 'explorar' && (
           <div className="space-y-6 animate-fade-in">
+            
+            {/* Compatibilidad */}
+            <div className="maya-card p-4">
+              <h3 className="text-maya-gold font-bold mb-4">💕 Compatibilidad de Kins</h3>
+              <p className="text-gray-400 text-sm mb-4">Ingresa la fecha de nacimiento de otra persona:</p>
+              <input
+                type="date"
+                value={compatDate}
+                onChange={(e) => { setCompatDate(e.target.value); setCompatResult(null); }}
+                className="w-full p-3 rounded-lg bg-maya-dark border border-maya-gold/30 text-white focus:border-maya-gold focus:outline-none mb-3"
+              />
+              <button
+                onClick={fetchCompatibility}
+                disabled={!compatDate || loadingCompat}
+                className="w-full py-2 rounded-lg bg-gradient-to-r from-maya-red to-maya-gold text-white font-medium hover:opacity-90 transition disabled:opacity-50"
+              >
+                {loadingCompat ? '🌀 Calculando...' : 'Ver compatibilidad'}
+              </button>
+              
+              {compatResult && !compatResult.error && (
+                <div className="mt-4 p-4 bg-maya-dark/50 rounded-lg">
+                  <div className="flex items-center justify-center gap-4 mb-3">
+                    <div className="text-center">
+                      <div className="text-3xl">{mySello?.emoji}</div>
+                      <div className="text-xs text-gray-400">Tú</div>
+                    </div>
+                    <div className="text-maya-gold text-2xl">💕</div>
+                    <div className="text-center">
+                      <div className="text-3xl">{compatResult.otherSello.emoji}</div>
+                      <div className="text-xs text-gray-400">Kin {compatResult.otherKin}</div>
+                    </div>
+                    <div className="text-gray-500">=</div>
+                    <div className="text-center">
+                      <div className="text-3xl glyph-glow">{compatResult.selloCombinado.emoji}</div>
+                      <div className="text-xs text-maya-jade">Kin {compatResult.kinCombinado}</div>
+                    </div>
+                  </div>
+                  <p className="text-gray-200 text-sm leading-relaxed">{compatResult.interpretation}</p>
+                </div>
+              )}
+            </div>
+
+            {/* Sellos */}
             <div className="maya-card p-4">
               <h3 className="text-maya-gold font-bold mb-4">Los 20 Sellos Solares</h3>
               <div className="grid grid-cols-4 gap-2">
@@ -383,6 +469,7 @@ export default function Home() {
               </div>
             </div>
 
+            {/* Tonos */}
             <div className="maya-card p-4">
               <h3 className="text-maya-gold font-bold mb-4">Los 13 Tonos Galácticos</h3>
               <div className="space-y-2">
@@ -423,7 +510,6 @@ export default function Home() {
         </div>
       </nav>
 
-      {/* Footer credit */}
       <div className="fixed bottom-16 left-0 right-0 text-center text-gray-600 text-xs py-1">
         Hecho con 🧡 por duendes.app 2026
       </div>
