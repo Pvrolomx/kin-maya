@@ -1,0 +1,107 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --maya-dark: #1a1a2e;
+  --maya-blue: #0f3460;
+  --maya-red: #e94560;
+  --maya-gold: #f9a825;
+  --maya-jade: #16a085;
+}
+
+body {
+  background: var(--maya-dark);
+  color: #eaeaea;
+  min-height: 100vh;
+}
+
+/* Patrón maya de fondo */
+.maya-pattern {
+  background-color: var(--maya-dark);
+  background-image: 
+    radial-gradient(circle at 25% 25%, rgba(15, 52, 96, 0.3) 0%, transparent 50%),
+    radial-gradient(circle at 75% 75%, rgba(233, 69, 96, 0.1) 0%, transparent 50%);
+}
+
+/* Borde estilo maya */
+.maya-border {
+  border: 2px solid transparent;
+  border-image: linear-gradient(
+    90deg,
+    var(--maya-gold) 0%,
+    var(--maya-red) 25%,
+    var(--maya-jade) 50%,
+    var(--maya-red) 75%,
+    var(--maya-gold) 100%
+  ) 1;
+}
+
+/* Glow dorado para glifos */
+.glyph-glow {
+  filter: drop-shadow(0 0 15px rgba(249, 168, 37, 0.5));
+  animation: pulse-glow 3s ease-in-out infinite;
+}
+
+@keyframes pulse-glow {
+  0%, 100% { filter: drop-shadow(0 0 15px rgba(249, 168, 37, 0.5)); }
+  50% { filter: drop-shadow(0 0 25px rgba(249, 168, 37, 0.8)); }
+}
+
+/* Card estilo maya */
+.maya-card {
+  background: linear-gradient(135deg, rgba(15, 52, 96, 0.6) 0%, rgba(26, 26, 46, 0.8) 100%);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(249, 168, 37, 0.3);
+  border-radius: 16px;
+}
+
+/* Oráculo cruz */
+.oracle-cross {
+  display: grid;
+  grid-template-areas:
+    ". guia ."
+    "antipoda destino analogo"
+    ". oculto .";
+  grid-template-columns: 1fr 1fr 1fr;
+  grid-template-rows: 1fr 1fr 1fr;
+  gap: 8px;
+}
+
+.oracle-guia { grid-area: guia; }
+.oracle-antipoda { grid-area: antipoda; }
+.oracle-destino { grid-area: destino; }
+.oracle-analogo { grid-area: analogo; }
+.oracle-oculto { grid-area: oculto; }
+
+/* Animación entrada */
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.animate-fade-in {
+  animation: fadeInUp 0.6s ease-out forwards;
+}
+
+/* Grecas maya decorativas */
+.maya-greca {
+  background: repeating-linear-gradient(
+    90deg,
+    var(--maya-gold) 0px,
+    var(--maya-gold) 4px,
+    transparent 4px,
+    transparent 8px,
+    var(--maya-red) 8px,
+    var(--maya-red) 12px,
+    transparent 12px,
+    transparent 16px
+  );
+  height: 4px;
+}
