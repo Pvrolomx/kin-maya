@@ -291,9 +291,9 @@ export default function Home() {
   const [darkMode, setDarkMode] = useState(true);
   const [selectedSeal, setSelectedSeal] = useState<any>(null);
   
-  const [selectedYear, setSelectedYear] = useState(1990);
-  const [selectedMonth, setSelectedMonth] = useState(0);
-  const [selectedDay, setSelectedDay] = useState(1);
+  const [selectedYear, setSelectedYear] = useState<number | null>(null);
+  const [selectedMonth, setSelectedMonth] = useState<number | null>(null);
+  const [selectedDay, setSelectedDay] = useState<number | null>(null);
   
   const [dailyInterpretation, setDailyInterpretation] = useState<string | null>(null);
   const [loadingDaily, setLoadingDaily] = useState(false);
@@ -339,6 +339,7 @@ export default function Home() {
   };
 
   const handleSaveBirthDate = () => {
+    if (selectedYear === null || selectedMonth === null || selectedDay === null) return;
     const dateStr = `${selectedYear}-${String(selectedMonth + 1).padStart(2, '0')}-${String(selectedDay).padStart(2, '0')}`;
     localStorage.setItem('kin-birthdate', dateStr);
     setBirthDate(dateStr);
@@ -442,29 +443,36 @@ export default function Home() {
     return `${day} ${monthName} ${year}`;
   };
 
-  const DateSelector = ({ year, setYear, month, setMonth, day, setDay, label }: any) => {
-    const daysInMonth = getDaysInMonth(year, month);
+  const DateSelector = ({ year, setYear, month, setMonth, day, setDay, label, showPlaceholder = false }: any) => {
+    const effectiveYear = year ?? 2000;
+    const effectiveMonth = month ?? 0;
+    const daysInMonth = getDaysInMonth(effectiveYear, effectiveMonth);
     const days = Array.from({ length: daysInMonth }, (_, i) => i + 1);
     
     useEffect(() => {
-      if (day > daysInMonth) setDay(daysInMonth);
+      if (day !== null && day > daysInMonth) setDay(daysInMonth);
     }, [month, year, daysInMonth, day, setDay]);
 
     const selectClass = darkMode 
       ? 'p-3 rounded-lg bg-maya-dark/80 border border-maya-gold/30 text-white focus:border-maya-gold focus:outline-none'
       : 'p-3 rounded-lg bg-white border border-gray-300 text-gray-900 focus:border-maya-gold focus:outline-none';
 
+    const placeholderClass = darkMode ? 'text-gray-500' : 'text-gray-400';
+
     return (
       <div className="mb-4">
         {label && <label className={`block text-maya-gold mb-2 text-sm`}>{label}</label>}
         <div className="grid grid-cols-3 gap-2">
-          <select value={day} onChange={(e) => setDay(Number(e.target.value))} className={selectClass}>
+          <select value={day ?? ''} onChange={(e) => setDay(e.target.value ? Number(e.target.value) : null)} className={`${selectClass} ${day === null ? placeholderClass : ''}`}>
+            {showPlaceholder && <option value="">{lang === 'es' ? 'Día' : 'Day'}</option>}
             {days.map(d => <option key={d} value={d}>{d}</option>)}
           </select>
-          <select value={month} onChange={(e) => setMonth(Number(e.target.value))} className={`${selectClass} text-sm`}>
+          <select value={month ?? ''} onChange={(e) => setMonth(e.target.value !== '' ? Number(e.target.value) : null)} className={`${selectClass} text-sm ${month === null ? placeholderClass : ''}`}>
+            {showPlaceholder && <option value="">{lang === 'es' ? 'Mes' : 'Month'}</option>}
             {t.months.map((m, i) => <option key={i} value={i}>{m}</option>)}
           </select>
-          <select value={year} onChange={(e) => setYear(Number(e.target.value))} className={selectClass}>
+          <select value={year ?? ''} onChange={(e) => setYear(e.target.value ? Number(e.target.value) : null)} className={`${selectClass} ${year === null ? placeholderClass : ''}`}>
+            {showPlaceholder && <option value="">{lang === 'es' ? 'Año' : 'Year'}</option>}
             {YEARS.map(y => <option key={y} value={y}>{y}</option>)}
           </select>
         </div>
@@ -528,8 +536,8 @@ export default function Home() {
           </div>
           <div className="maya-greca mb-6"></div>
           <p className={`text-center ${textMuted} mb-6`}>{t.discover}</p>
-          <DateSelector year={selectedYear} setYear={setSelectedYear} month={selectedMonth} setMonth={setSelectedMonth} day={selectedDay} setDay={setSelectedDay} label={t.birthQuestion} />
-          <button onClick={handleSaveBirthDate} className="w-full py-3 rounded-lg bg-gradient-to-r from-maya-red to-maya-gold text-white font-bold hover:opacity-90 transition">
+          <DateSelector year={selectedYear} setYear={setSelectedYear} month={selectedMonth} setMonth={setSelectedMonth} day={selectedDay} setDay={setSelectedDay} label={t.birthQuestion} showPlaceholder={true} />
+          <button onClick={handleSaveBirthDate} disabled={selectedYear === null || selectedMonth === null || selectedDay === null} className="w-full py-3 rounded-lg bg-gradient-to-r from-maya-red to-maya-gold text-white font-bold hover:opacity-90 transition disabled:opacity-50 disabled:cursor-not-allowed">
             {t.discoverBtn}
           </button>
         </div>
