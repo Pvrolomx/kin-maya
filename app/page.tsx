@@ -25,7 +25,7 @@ const TRANSLATIONS = {
     closeInterpretation: '✕ Cerrar interpretación',
     yourSignature: 'Tu Firma Galáctica',
     birthOracle: 'Tu Oráculo de Nacimiento',
-    changeBirth: 'Cambiar fecha de nacimiento',
+    changeBirth: '🔄 Cambiar mi fecha de nacimiento',
     compatibility: '💕 Compatibilidad de Kins',
     otherPerson: 'Fecha de nacimiento de otra persona:',
     seeCompatibility: 'Ver compatibilidad',
@@ -47,6 +47,7 @@ const TRANSLATIONS = {
     galacticPortal: '✨ Portal Galáctico de Activación',
     madeWith: 'Hecho con 🧡 por duendes.app 2026',
     months: ['Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'],
+    reset: 'Reiniciar',
   },
   en: {
     title: 'KIN',
@@ -66,7 +67,7 @@ const TRANSLATIONS = {
     closeInterpretation: '✕ Close interpretation',
     yourSignature: 'Your Galactic Signature',
     birthOracle: 'Your Birth Oracle',
-    changeBirth: 'Change birth date',
+    changeBirth: '🔄 Change my birth date',
     compatibility: '💕 Kin Compatibility',
     otherPerson: 'Other person\'s birth date:',
     seeCompatibility: 'See compatibility',
@@ -88,6 +89,7 @@ const TRANSLATIONS = {
     galacticPortal: '✨ Galactic Activation Portal',
     madeWith: 'Made with 🧡 by duendes.app 2026',
     months: ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'],
+    reset: 'Reset',
   }
 };
 
@@ -322,6 +324,13 @@ export default function Home() {
     localStorage.setItem('kin-dark', String(newDark));
   };
 
+  const handleReset = () => {
+    localStorage.removeItem('kin-birthdate');
+    setShowOnboarding(true);
+    setBirthDate(null);
+    setActiveTab('hoy');
+  };
+
   const handleSaveBirthDate = () => {
     const dateStr = `${selectedYear}-${String(selectedMonth + 1).padStart(2, '0')}-${String(selectedDay).padStart(2, '0')}`;
     localStorage.setItem('kin-birthdate', dateStr);
@@ -415,10 +424,9 @@ export default function Home() {
   const clearCompatibility = () => setCompatResult(null);
 
   // Theme classes
-  const bgMain = darkMode ? 'bg-maya-dark' : 'bg-gray-100';
   const textMain = darkMode ? 'text-white' : 'text-gray-900';
   const textMuted = darkMode ? 'text-gray-400' : 'text-gray-600';
-  const cardBg = darkMode ? 'maya-card' : 'bg-white border border-gray-200 rounded-xl shadow-sm';
+  const cardBg = darkMode ? 'maya-card' : 'bg-white/90 border border-gray-200 rounded-xl shadow-sm backdrop-blur';
   const borderColor = darkMode ? 'border-maya-gold/20' : 'border-gray-200';
 
   // ─────────────────────────────────────────────────────────────
@@ -433,7 +441,7 @@ export default function Home() {
     }, [month, year, daysInMonth, day, setDay]);
 
     const selectClass = darkMode 
-      ? 'p-3 rounded-lg bg-maya-dark border border-maya-gold/30 text-white focus:border-maya-gold focus:outline-none'
+      ? 'p-3 rounded-lg bg-maya-dark/80 border border-maya-gold/30 text-white focus:border-maya-gold focus:outline-none'
       : 'p-3 rounded-lg bg-white border border-gray-300 text-gray-900 focus:border-maya-gold focus:outline-none';
 
     return (
@@ -465,6 +473,11 @@ export default function Home() {
       <button onClick={toggleDark} className={`px-2 py-1 rounded text-xs ${darkMode ? 'bg-gray-700 text-white' : 'bg-gray-200 text-gray-800'}`}>
         {darkMode ? '☀️' : '🌙'}
       </button>
+      {!showOnboarding && (
+        <button onClick={handleReset} className={`px-2 py-1 rounded text-xs ${darkMode ? 'bg-red-900/50 text-red-400' : 'bg-red-100 text-red-600'}`}>
+          🔄
+        </button>
+      )}
     </div>
   );
 
@@ -473,7 +486,7 @@ export default function Home() {
   // ─────────────────────────────────────────────────────────────
   if (showOnboarding) {
     return (
-      <div className={`min-h-screen flex flex-col items-center justify-center p-6 ${bgMain}`}>
+      <div className={`min-h-screen flex flex-col items-center justify-center p-6 ${darkMode ? 'bg-maya-dark' : 'bg-gray-100'}`} style={darkMode ? { backgroundImage: 'url(/icons/background.png)', backgroundSize: 'cover', backgroundPosition: 'center' } : {}}>
         <SettingsBar />
         <div className={`${cardBg} p-8 max-w-md w-full animate-fade-in`}>
           <div className="text-center mb-8">
@@ -517,11 +530,11 @@ export default function Home() {
   // APP PRINCIPAL
   // ─────────────────────────────────────────────────────────────
   return (
-    <div className={`min-h-screen pb-20 ${bgMain} ${textMain}`}>
+    <div className={`min-h-screen pb-20 ${textMain}`} style={darkMode ? { backgroundImage: 'url(/icons/background.png)', backgroundSize: 'cover', backgroundPosition: 'center', backgroundAttachment: 'fixed' } : { backgroundColor: '#f3f4f6' }}>
       <SettingsBar />
       
       {/* Header */}
-      <header className={`p-4 text-center border-b ${borderColor}`}>
+      <header className={`p-4 text-center border-b ${borderColor} ${darkMode ? 'bg-maya-dark/80 backdrop-blur' : 'bg-white/80 backdrop-blur'}`}>
         <div className={`${textMuted} text-sm`}>
           {today.toLocaleDateString(lang === 'es' ? 'es-MX' : 'en-US', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' })}
         </div>
@@ -561,7 +574,7 @@ export default function Home() {
             {myKin && mySello && (
               <div className={`${cardBg} p-4`}>
                 <h3 className="text-maya-gold font-bold mb-2">{t.yourConnection}</h3>
-                <div className="flex items-center gap-2 mb-2">
+                <div className="flex items-center gap-2 mb-2 flex-wrap">
                   <span className={textMuted}>{t.yourEnergy}</span>
                   <SealIcon icon={mySello.icon} size={24} />
                   <span className="text-maya-jade">{mySello.nombre}</span>
@@ -614,7 +627,7 @@ export default function Home() {
                 <div className="oracle-oculto"><OracleCard position={t.hidden} data={myOraculo.oculto} /></div>
               </div>
             </div>
-            <button onClick={() => { localStorage.removeItem('kin-birthdate'); setShowOnboarding(true); setBirthDate(null); }} className={`w-full py-2 ${textMuted} text-sm hover:text-maya-red transition`}>
+            <button onClick={handleReset} className={`w-full py-3 rounded-lg border-2 border-maya-red/50 text-maya-red hover:bg-maya-red/10 transition font-medium`}>
               {t.changeBirth}
             </button>
           </div>
