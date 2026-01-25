@@ -48,6 +48,7 @@ const TRANSLATIONS = {
     madeWith: 'Hecho con 🧡 por duendes.app 2026',
     months: ['Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'],
     reset: 'Reiniciar',
+    born: 'Nacido el',
   },
   en: {
     title: 'KIN',
@@ -90,6 +91,7 @@ const TRANSLATIONS = {
     madeWith: 'Made with 🧡 by duendes.app 2026',
     months: ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'],
     reset: 'Reset',
+    born: 'Born on',
   }
 };
 
@@ -333,6 +335,7 @@ export default function Home() {
 
   const handleSaveBirthDate = () => {
     const dateStr = `${selectedYear}-${String(selectedMonth + 1).padStart(2, '0')}-${String(selectedDay).padStart(2, '0')}`;
+    console.log('Saving birthdate:', dateStr, 'Year:', selectedYear, 'Month:', selectedMonth, 'Day:', selectedDay);
     localStorage.setItem('kin-birthdate', dateStr);
     setBirthDate(dateStr);
     setShowOnboarding(false);
@@ -350,10 +353,12 @@ export default function Home() {
 
   let myKin = 0, myOraculo: any = null, mySello: any = null, myTono: any = null;
   if (birthDate) {
-    myKin = calcularKin(new Date(birthDate));
+    const bdate = new Date(birthDate + 'T12:00:00'); // Add time to avoid timezone issues
+    myKin = calcularKin(bdate);
     myOraculo = calcularOraculo(myKin, sellos, tonos);
     mySello = myOraculo.destino.sello;
     myTono = myOraculo.destino.tono;
+    console.log('Birth date:', birthDate, 'Parsed:', bdate, 'Kin:', myKin);
   }
 
   const fetchDailyInterpretation = async () => {
@@ -428,6 +433,13 @@ export default function Home() {
   const textMuted = darkMode ? 'text-gray-400' : 'text-gray-600';
   const cardBg = darkMode ? 'maya-card' : 'bg-white/90 border border-gray-200 rounded-xl shadow-sm backdrop-blur';
   const borderColor = darkMode ? 'border-maya-gold/20' : 'border-gray-200';
+
+  // Format birth date for display
+  const formatBirthDate = (dateStr: string) => {
+    const [year, month, day] = dateStr.split('-').map(Number);
+    const monthName = t.months[month - 1];
+    return `${day} ${monthName} ${year}`;
+  };
 
   // ─────────────────────────────────────────────────────────────
   // SELECTOR DE FECHA
@@ -609,6 +621,7 @@ export default function Home() {
               </div>
               <h2 className={`text-2xl font-bold ${COLORES[mySello.color as keyof typeof COLORES].text}`}>{myTono.nombre} {mySello.nombre}</h2>
               <p className={`${textMuted} mt-1`}>Kin {myKin} • {t.yourSignature}</p>
+              {birthDate && <p className={`${textMuted} text-xs mt-1`}>{t.born}: {formatBirthDate(birthDate)}</p>}
               <div className="maya-greca my-4"></div>
               <div className="text-left space-y-2 text-sm">
                 <p><span className="text-maya-gold">{t.power}:</span> {mySello.poder}</p>
