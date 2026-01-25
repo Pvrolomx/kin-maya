@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 
-const ANTHROPIC_API_KEY = process.env.ANTHROPIC_API_KEY;
+const OPENAI_API_KEY = process.env.OPENAI_API_KEY;
 
 export async function POST(request: NextRequest) {
   try {
@@ -35,22 +35,22 @@ Explica en 4-5 oraciones qué tipo de energía tienen juntos, qué pueden crear,
 Sé poético pero práctico. No uses listas ni bullets. Escribe en español fluido y cálido.`;
     }
 
-    const response = await fetch('https://api.anthropic.com/v1/messages', {
+    const response = await fetch('https://api.openai.com/v1/chat/completions', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
-        'x-api-key': ANTHROPIC_API_KEY || '',
-        'anthropic-version': '2023-06-01',
+        'Authorization': `Bearer ${OPENAI_API_KEY}`,
       },
       body: JSON.stringify({
-        model: 'claude-3-haiku-20240307',
-        max_tokens: 300,
+        model: 'gpt-4o-mini',
         messages: [{ role: 'user', content: prompt }],
+        max_tokens: 300,
+        temperature: 0.8,
       }),
     });
 
     const data = await response.json();
-    const interpretation = data.content?.[0]?.text || 'No se pudo generar la interpretación.';
+    const interpretation = data.choices?.[0]?.message?.content || 'No se pudo generar la interpretación.';
 
     return NextResponse.json({ interpretation });
   } catch (error) {
