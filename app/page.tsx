@@ -49,6 +49,8 @@ const TRANSLATIONS = {
     months: ['Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'],
     reset: 'Reiniciar',
     born: 'Nacido el',
+    close: 'Cerrar',
+    tapToLearn: 'Toca un sello para ver su significado',
   },
   en: {
     title: 'KIN',
@@ -92,6 +94,8 @@ const TRANSLATIONS = {
     months: ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'],
     reset: 'Reset',
     born: 'Born on',
+    close: 'Close',
+    tapToLearn: 'Tap a seal to learn its meaning',
   }
 };
 
@@ -101,48 +105,48 @@ const TRANSLATIONS = {
 
 const SELLOS = {
   es: [
-    { nombre: 'Dragón', icon: 'dragon', color: 'red', poder: 'Nacimiento', accion: 'Nutrir', esencia: 'Ser' },
-    { nombre: 'Viento', icon: 'wind', color: 'white', poder: 'Espíritu', accion: 'Comunicar', esencia: 'Aliento' },
-    { nombre: 'Noche', icon: 'night', color: 'blue', poder: 'Abundancia', accion: 'Soñar', esencia: 'Intuición' },
-    { nombre: 'Semilla', icon: 'seed', color: 'yellow', poder: 'Florecimiento', accion: 'Apuntar', esencia: 'Conciencia' },
-    { nombre: 'Serpiente', icon: 'serpent', color: 'red', poder: 'Fuerza Vital', accion: 'Sobrevivir', esencia: 'Instinto' },
-    { nombre: 'Enlazador', icon: 'worldbridger', color: 'white', poder: 'Muerte', accion: 'Igualar', esencia: 'Oportunidad' },
-    { nombre: 'Mano', icon: 'hand', color: 'blue', poder: 'Realización', accion: 'Conocer', esencia: 'Sanación' },
-    { nombre: 'Estrella', icon: 'star', color: 'yellow', poder: 'Elegancia', accion: 'Embellecer', esencia: 'Arte' },
-    { nombre: 'Luna', icon: 'moon', color: 'red', poder: 'Agua Universal', accion: 'Purificar', esencia: 'Flujo' },
-    { nombre: 'Perro', icon: 'dog', color: 'white', poder: 'Corazón', accion: 'Amar', esencia: 'Lealtad' },
-    { nombre: 'Mono', icon: 'monkey', color: 'blue', poder: 'Magia', accion: 'Jugar', esencia: 'Ilusión' },
-    { nombre: 'Humano', icon: 'human', color: 'yellow', poder: 'Libre Albedrío', accion: 'Influenciar', esencia: 'Sabiduría' },
-    { nombre: 'Caminante', icon: 'skywalker', color: 'red', poder: 'Espacio', accion: 'Explorar', esencia: 'Vigilia' },
-    { nombre: 'Mago', icon: 'wizard', color: 'white', poder: 'Atemporalidad', accion: 'Encantar', esencia: 'Receptividad' },
-    { nombre: 'Águila', icon: 'eagle', color: 'blue', poder: 'Visión', accion: 'Crear', esencia: 'Mente' },
-    { nombre: 'Guerrero', icon: 'warrior', color: 'yellow', poder: 'Inteligencia', accion: 'Cuestionar', esencia: 'Intrepidez' },
-    { nombre: 'Tierra', icon: 'earth', color: 'red', poder: 'Navegación', accion: 'Evolucionar', esencia: 'Sincronicidad' },
-    { nombre: 'Espejo', icon: 'mirror', color: 'white', poder: 'Sin Fin', accion: 'Reflejar', esencia: 'Orden' },
-    { nombre: 'Tormenta', icon: 'storm', color: 'blue', poder: 'Autogeneración', accion: 'Catalizar', esencia: 'Energía' },
-    { nombre: 'Sol', icon: 'sun', color: 'yellow', poder: 'Fuego Universal', accion: 'Iluminar', esencia: 'Vida' },
+    { nombre: 'Dragón', icon: 'dragon', color: 'red', poder: 'Nacimiento', accion: 'Nutrir', esencia: 'Ser', desc: 'El Dragón Rojo representa el origen, la madre cósmica que nutre toda la creación. Es la energía del nacimiento y los nuevos comienzos.' },
+    { nombre: 'Viento', icon: 'wind', color: 'white', poder: 'Espíritu', accion: 'Comunicar', esencia: 'Aliento', desc: 'El Viento Blanco es el mensajero divino, el aliento de vida que comunica la verdad espiritual y trae inspiración.' },
+    { nombre: 'Noche', icon: 'night', color: 'blue', poder: 'Abundancia', accion: 'Soñar', esencia: 'Intuición', desc: 'La Noche Azul guarda los sueños y la abundancia interior. Es el portal a la intuición profunda y la riqueza del alma.' },
+    { nombre: 'Semilla', icon: 'seed', color: 'yellow', poder: 'Florecimiento', accion: 'Apuntar', esencia: 'Conciencia', desc: 'La Semilla Amarilla contiene todo el potencial de crecimiento. Es la conciencia que apunta hacia su máximo florecimiento.' },
+    { nombre: 'Serpiente', icon: 'serpent', color: 'red', poder: 'Fuerza Vital', accion: 'Sobrevivir', esencia: 'Instinto', desc: 'La Serpiente Roja es la kundalini, la fuerza vital que asciende. Representa el instinto de supervivencia y la pasión.' },
+    { nombre: 'Enlazador', icon: 'worldbridger', color: 'white', poder: 'Muerte', accion: 'Igualar', esencia: 'Oportunidad', desc: 'El Enlazador de Mundos cruza los umbrales entre vida y muerte. Transforma los finales en oportunidades de renacimiento.' },
+    { nombre: 'Mano', icon: 'hand', color: 'blue', poder: 'Realización', accion: 'Conocer', esencia: 'Sanación', desc: 'La Mano Azul es el sanador cósmico. Conoce a través del hacer y realiza la sanación a través del servicio.' },
+    { nombre: 'Estrella', icon: 'star', color: 'yellow', poder: 'Elegancia', accion: 'Embellecer', esencia: 'Arte', desc: 'La Estrella Amarilla es Venus, el principio de la belleza armónica. Embellece todo lo que toca con arte y elegancia.' },
+    { nombre: 'Luna', icon: 'moon', color: 'red', poder: 'Agua Universal', accion: 'Purificar', esencia: 'Flujo', desc: 'La Luna Roja es el agua cósmica que purifica las emociones. Representa el flujo de los sentimientos y la intuición femenina.' },
+    { nombre: 'Perro', icon: 'dog', color: 'white', poder: 'Corazón', accion: 'Amar', esencia: 'Lealtad', desc: 'El Perro Blanco es el guardián del corazón. Enseña el amor incondicional, la lealtad y la compañía fiel.' },
+    { nombre: 'Mono', icon: 'monkey', color: 'blue', poder: 'Magia', accion: 'Jugar', esencia: 'Ilusión', desc: 'El Mono Azul es el mago jugador que teje la ilusión cósmica. Transforma la realidad a través del juego y la creatividad.' },
+    { nombre: 'Humano', icon: 'human', color: 'yellow', poder: 'Libre Albedrío', accion: 'Influenciar', esencia: 'Sabiduría', desc: 'El Humano Amarillo representa la vasija de la sabiduría. Ejerce el libre albedrío para influenciar el destino.' },
+    { nombre: 'Caminante', icon: 'skywalker', color: 'red', poder: 'Espacio', accion: 'Explorar', esencia: 'Vigilia', desc: 'El Caminante del Cielo explora las dimensiones del espacio. Es el profeta despierto que conecta cielo y tierra.' },
+    { nombre: 'Mago', icon: 'wizard', color: 'white', poder: 'Atemporalidad', accion: 'Encantar', esencia: 'Receptividad', desc: 'El Mago Blanco trasciende el tiempo con su encantamiento. Es receptivo al poder del ahora eterno.' },
+    { nombre: 'Águila', icon: 'eagle', color: 'blue', poder: 'Visión', accion: 'Crear', esencia: 'Mente', desc: 'El Águila Azul posee la visión panorámica de la mente cósmica. Crea realidades desde la perspectiva elevada.' },
+    { nombre: 'Guerrero', icon: 'warrior', color: 'yellow', poder: 'Inteligencia', accion: 'Cuestionar', esencia: 'Intrepidez', desc: 'El Guerrero Amarillo cuestiona con inteligencia intrépida. Es el buscador valiente de la verdad.' },
+    { nombre: 'Tierra', icon: 'earth', color: 'red', poder: 'Navegación', accion: 'Evolucionar', esencia: 'Sincronicidad', desc: 'La Tierra Roja navega por las sincronicidades del tiempo. Evoluciona siguiendo las señales del universo.' },
+    { nombre: 'Espejo', icon: 'mirror', color: 'white', poder: 'Sin Fin', accion: 'Reflejar', esencia: 'Orden', desc: 'El Espejo Blanco refleja la verdad sin fin. Muestra el orden cósmico y la realidad tal como es.' },
+    { nombre: 'Tormenta', icon: 'storm', color: 'blue', poder: 'Autogeneración', accion: 'Catalizar', esencia: 'Energía', desc: 'La Tormenta Azul cataliza la transformación radical. Se autogenera a través de la energía del cambio.' },
+    { nombre: 'Sol', icon: 'sun', color: 'yellow', poder: 'Fuego Universal', accion: 'Iluminar', esencia: 'Vida', desc: 'El Sol Amarillo es el fuego universal que ilumina toda vida. Es la consciencia crística y la iluminación total.' },
   ],
   en: [
-    { nombre: 'Dragon', icon: 'dragon', color: 'red', poder: 'Birth', accion: 'Nurture', esencia: 'Being' },
-    { nombre: 'Wind', icon: 'wind', color: 'white', poder: 'Spirit', accion: 'Communicate', esencia: 'Breath' },
-    { nombre: 'Night', icon: 'night', color: 'blue', poder: 'Abundance', accion: 'Dream', esencia: 'Intuition' },
-    { nombre: 'Seed', icon: 'seed', color: 'yellow', poder: 'Flowering', accion: 'Target', esencia: 'Awareness' },
-    { nombre: 'Serpent', icon: 'serpent', color: 'red', poder: 'Life Force', accion: 'Survive', esencia: 'Instinct' },
-    { nombre: 'Worldbridger', icon: 'worldbridger', color: 'white', poder: 'Death', accion: 'Equalize', esencia: 'Opportunity' },
-    { nombre: 'Hand', icon: 'hand', color: 'blue', poder: 'Accomplishment', accion: 'Know', esencia: 'Healing' },
-    { nombre: 'Star', icon: 'star', color: 'yellow', poder: 'Elegance', accion: 'Beautify', esencia: 'Art' },
-    { nombre: 'Moon', icon: 'moon', color: 'red', poder: 'Universal Water', accion: 'Purify', esencia: 'Flow' },
-    { nombre: 'Dog', icon: 'dog', color: 'white', poder: 'Heart', accion: 'Love', esencia: 'Loyalty' },
-    { nombre: 'Monkey', icon: 'monkey', color: 'blue', poder: 'Magic', accion: 'Play', esencia: 'Illusion' },
-    { nombre: 'Human', icon: 'human', color: 'yellow', poder: 'Free Will', accion: 'Influence', esencia: 'Wisdom' },
-    { nombre: 'Skywalker', icon: 'skywalker', color: 'red', poder: 'Space', accion: 'Explore', esencia: 'Wakefulness' },
-    { nombre: 'Wizard', icon: 'wizard', color: 'white', poder: 'Timelessness', accion: 'Enchant', esencia: 'Receptivity' },
-    { nombre: 'Eagle', icon: 'eagle', color: 'blue', poder: 'Vision', accion: 'Create', esencia: 'Mind' },
-    { nombre: 'Warrior', icon: 'warrior', color: 'yellow', poder: 'Intelligence', accion: 'Question', esencia: 'Fearlessness' },
-    { nombre: 'Earth', icon: 'earth', color: 'red', poder: 'Navigation', accion: 'Evolve', esencia: 'Synchronicity' },
-    { nombre: 'Mirror', icon: 'mirror', color: 'white', poder: 'Endlessness', accion: 'Reflect', esencia: 'Order' },
-    { nombre: 'Storm', icon: 'storm', color: 'blue', poder: 'Self-Generation', accion: 'Catalyze', esencia: 'Energy' },
-    { nombre: 'Sun', icon: 'sun', color: 'yellow', poder: 'Universal Fire', accion: 'Enlighten', esencia: 'Life' },
+    { nombre: 'Dragon', icon: 'dragon', color: 'red', poder: 'Birth', accion: 'Nurture', esencia: 'Being', desc: 'The Red Dragon represents the origin, the cosmic mother who nurtures all creation. It is the energy of birth and new beginnings.' },
+    { nombre: 'Wind', icon: 'wind', color: 'white', poder: 'Spirit', accion: 'Communicate', esencia: 'Breath', desc: 'The White Wind is the divine messenger, the breath of life that communicates spiritual truth and brings inspiration.' },
+    { nombre: 'Night', icon: 'night', color: 'blue', poder: 'Abundance', accion: 'Dream', esencia: 'Intuition', desc: 'The Blue Night holds dreams and inner abundance. It is the portal to deep intuition and soul richness.' },
+    { nombre: 'Seed', icon: 'seed', color: 'yellow', poder: 'Flowering', accion: 'Target', esencia: 'Awareness', desc: 'The Yellow Seed contains all growth potential. It is the awareness that aims toward its maximum flowering.' },
+    { nombre: 'Serpent', icon: 'serpent', color: 'red', poder: 'Life Force', accion: 'Survive', esencia: 'Instinct', desc: 'The Red Serpent is the kundalini, the ascending life force. It represents the survival instinct and passion.' },
+    { nombre: 'Worldbridger', icon: 'worldbridger', color: 'white', poder: 'Death', accion: 'Equalize', esencia: 'Opportunity', desc: 'The Worldbridger crosses thresholds between life and death. It transforms endings into opportunities for rebirth.' },
+    { nombre: 'Hand', icon: 'hand', color: 'blue', poder: 'Accomplishment', accion: 'Know', esencia: 'Healing', desc: 'The Blue Hand is the cosmic healer. It knows through doing and accomplishes healing through service.' },
+    { nombre: 'Star', icon: 'star', color: 'yellow', poder: 'Elegance', accion: 'Beautify', esencia: 'Art', desc: 'The Yellow Star is Venus, the principle of harmonic beauty. It beautifies everything it touches with art and elegance.' },
+    { nombre: 'Moon', icon: 'moon', color: 'red', poder: 'Universal Water', accion: 'Purify', esencia: 'Flow', desc: 'The Red Moon is the cosmic water that purifies emotions. It represents the flow of feelings and feminine intuition.' },
+    { nombre: 'Dog', icon: 'dog', color: 'white', poder: 'Heart', accion: 'Love', esencia: 'Loyalty', desc: 'The White Dog is the guardian of the heart. It teaches unconditional love, loyalty and faithful companionship.' },
+    { nombre: 'Monkey', icon: 'monkey', color: 'blue', poder: 'Magic', accion: 'Play', esencia: 'Illusion', desc: 'The Blue Monkey is the playful magician who weaves cosmic illusion. It transforms reality through play and creativity.' },
+    { nombre: 'Human', icon: 'human', color: 'yellow', poder: 'Free Will', accion: 'Influence', esencia: 'Wisdom', desc: 'The Yellow Human represents the vessel of wisdom. It exercises free will to influence destiny.' },
+    { nombre: 'Skywalker', icon: 'skywalker', color: 'red', poder: 'Space', accion: 'Explore', esencia: 'Wakefulness', desc: 'The Skywalker explores the dimensions of space. It is the awakened prophet connecting heaven and earth.' },
+    { nombre: 'Wizard', icon: 'wizard', color: 'white', poder: 'Timelessness', accion: 'Enchant', esencia: 'Receptivity', desc: 'The White Wizard transcends time with enchantment. It is receptive to the power of the eternal now.' },
+    { nombre: 'Eagle', icon: 'eagle', color: 'blue', poder: 'Vision', accion: 'Create', esencia: 'Mind', desc: 'The Blue Eagle possesses the panoramic vision of cosmic mind. It creates realities from an elevated perspective.' },
+    { nombre: 'Warrior', icon: 'warrior', color: 'yellow', poder: 'Intelligence', accion: 'Question', esencia: 'Fearlessness', desc: 'The Yellow Warrior questions with fearless intelligence. It is the brave seeker of truth.' },
+    { nombre: 'Earth', icon: 'earth', color: 'red', poder: 'Navigation', accion: 'Evolve', esencia: 'Synchronicity', desc: 'The Red Earth navigates through synchronicities of time. It evolves following the signs of the universe.' },
+    { nombre: 'Mirror', icon: 'mirror', color: 'white', poder: 'Endlessness', accion: 'Reflect', esencia: 'Order', desc: 'The White Mirror reflects endless truth. It shows cosmic order and reality as it is.' },
+    { nombre: 'Storm', icon: 'storm', color: 'blue', poder: 'Self-Generation', accion: 'Catalyze', esencia: 'Energy', desc: 'The Blue Storm catalyzes radical transformation. It self-generates through the energy of change.' },
+    { nombre: 'Sun', icon: 'sun', color: 'yellow', poder: 'Universal Fire', accion: 'Enlighten', esencia: 'Life', desc: 'The Yellow Sun is the universal fire that illuminates all life. It is the Christ consciousness and total enlightenment.' },
   ]
 };
 
@@ -285,6 +289,7 @@ export default function Home() {
   const [activeTab, setActiveTab] = useState<'hoy' | 'mikin' | 'explorar'>('hoy');
   const [lang, setLang] = useState<'es' | 'en'>('es');
   const [darkMode, setDarkMode] = useState(true);
+  const [selectedSeal, setSelectedSeal] = useState<any>(null);
   
   const [selectedYear, setSelectedYear] = useState(1990);
   const [selectedMonth, setSelectedMonth] = useState(0);
@@ -309,8 +314,7 @@ export default function Home() {
     const saved = localStorage.getItem('kin-birthdate');
     const savedLang = localStorage.getItem('kin-lang') as 'es' | 'en';
     const savedDark = localStorage.getItem('kin-dark');
-    if (saved) { setBirthDate(saved); setShowOnboarding(false);
-    setActiveTab('mikin'); }
+    if (saved) { setBirthDate(saved); setShowOnboarding(false); }
     if (savedLang) setLang(savedLang);
     if (savedDark !== null) setDarkMode(savedDark === 'true');
   }, []);
@@ -336,11 +340,9 @@ export default function Home() {
 
   const handleSaveBirthDate = () => {
     const dateStr = `${selectedYear}-${String(selectedMonth + 1).padStart(2, '0')}-${String(selectedDay).padStart(2, '0')}`;
-    console.log('Saving birthdate:', dateStr, 'Year:', selectedYear, 'Month:', selectedMonth, 'Day:', selectedDay);
     localStorage.setItem('kin-birthdate', dateStr);
     setBirthDate(dateStr);
     setShowOnboarding(false);
-    setActiveTab('mikin');
   };
 
   const today = new Date();
@@ -355,12 +357,11 @@ export default function Home() {
 
   let myKin = 0, myOraculo: any = null, mySello: any = null, myTono: any = null;
   if (birthDate) {
-    const bdate = new Date(birthDate + 'T12:00:00'); // Add time to avoid timezone issues
+    const bdate = new Date(birthDate + 'T12:00:00');
     myKin = calcularKin(bdate);
     myOraculo = calcularOraculo(myKin, sellos, tonos);
     mySello = myOraculo.destino.sello;
     myTono = myOraculo.destino.tono;
-    console.log('Birth date:', birthDate, 'Parsed:', bdate, 'Kin:', myKin);
   }
 
   const fetchDailyInterpretation = async () => {
@@ -430,22 +431,17 @@ export default function Home() {
   const clearInterpretation = () => setDailyInterpretation(null);
   const clearCompatibility = () => setCompatResult(null);
 
-  // Theme classes
   const textMain = darkMode ? 'text-white' : 'text-gray-900';
   const textMuted = darkMode ? 'text-gray-400' : 'text-gray-600';
   const cardBg = darkMode ? 'maya-card' : 'bg-white/90 border border-gray-200 rounded-xl shadow-sm backdrop-blur';
   const borderColor = darkMode ? 'border-maya-gold/20' : 'border-gray-200';
 
-  // Format birth date for display
   const formatBirthDate = (dateStr: string) => {
     const [year, month, day] = dateStr.split('-').map(Number);
     const monthName = t.months[month - 1];
     return `${day} ${monthName} ${year}`;
   };
 
-  // ─────────────────────────────────────────────────────────────
-  // SELECTOR DE FECHA
-  // ─────────────────────────────────────────────────────────────
   const DateSelector = ({ year, setYear, month, setMonth, day, setDay, label }: any) => {
     const daysInMonth = getDaysInMonth(year, month);
     const days = Array.from({ length: daysInMonth }, (_, i) => i + 1);
@@ -476,9 +472,6 @@ export default function Home() {
     );
   };
 
-  // ─────────────────────────────────────────────────────────────
-  // SETTINGS TOGGLES
-  // ─────────────────────────────────────────────────────────────
   const SettingsBar = () => (
     <div className="fixed top-2 right-2 flex gap-2 z-50">
       <button onClick={toggleLang} className={`px-2 py-1 rounded text-xs font-bold ${darkMode ? 'bg-maya-gold/20 text-maya-gold' : 'bg-maya-gold text-white'}`}>
@@ -495,9 +488,32 @@ export default function Home() {
     </div>
   );
 
-  // ─────────────────────────────────────────────────────────────
-  // ONBOARDING
-  // ─────────────────────────────────────────────────────────────
+  // MODAL SELLO
+  const SealModal = () => {
+    if (!selectedSeal) return null;
+    const color = COLORES[selectedSeal.color as keyof typeof COLORES];
+    return (
+      <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/70 backdrop-blur-sm" onClick={() => setSelectedSeal(null)}>
+        <div className={`${cardBg} max-w-sm w-full p-6 animate-fade-in`} onClick={(e) => e.stopPropagation()}>
+          <div className="flex justify-center mb-4">
+            <SealIcon icon={selectedSeal.icon} size={80} className="glyph-glow" />
+          </div>
+          <h3 className={`text-2xl font-bold text-center ${color.text} mb-2`}>{selectedSeal.nombre}</h3>
+          <div className="maya-greca my-4"></div>
+          <div className="space-y-2 text-sm mb-4">
+            <p><span className="text-maya-gold">{t.power}:</span> {selectedSeal.poder}</p>
+            <p><span className="text-maya-gold">{t.action}:</span> {selectedSeal.accion}</p>
+            <p><span className="text-maya-gold">{t.essence}:</span> {selectedSeal.esencia}</p>
+          </div>
+          <p className={`${textMuted} text-sm leading-relaxed mb-4`}>{selectedSeal.desc}</p>
+          <button onClick={() => setSelectedSeal(null)} className={`w-full py-2 rounded-lg border ${darkMode ? 'border-gray-600 text-gray-400 hover:border-maya-gold hover:text-maya-gold' : 'border-gray-300 text-gray-600'} text-sm transition`}>
+            {t.close}
+          </button>
+        </div>
+      </div>
+    );
+  };
+
   if (showOnboarding) {
     return (
       <div className={`min-h-screen flex flex-col items-center justify-center p-6 ${darkMode ? 'bg-maya-dark' : 'bg-gray-100'}`} style={darkMode ? { backgroundImage: 'url(/icons/background.png)', backgroundSize: 'cover', backgroundPosition: 'center' } : {}}>
@@ -522,15 +538,12 @@ export default function Home() {
     );
   }
 
-  // ─────────────────────────────────────────────────────────────
-  // COMPONENTE ORÁCULO
-  // ─────────────────────────────────────────────────────────────
   const OracleCard = ({ position, data, size = 'normal' }: any) => {
     const color = COLORES[data.sello.color as keyof typeof COLORES];
     const isLarge = size === 'large';
     const iconSize = isLarge ? 56 : 40;
     return (
-      <div className={`${color.bg} ${color.border} border rounded-lg p-2 text-center ${isLarge ? 'p-4' : ''}`}>
+      <div className={`${color.bg} ${color.border} border rounded-lg p-2 text-center ${isLarge ? 'p-4' : ''} cursor-pointer hover:scale-105 transition`} onClick={() => setSelectedSeal(data.sello)}>
         <div className={`flex justify-center ${isLarge ? 'glyph-glow' : ''}`}>
           <SealIcon icon={data.sello.icon} size={iconSize} />
         </div>
@@ -540,14 +553,11 @@ export default function Home() {
     );
   };
 
-  // ─────────────────────────────────────────────────────────────
-  // APP PRINCIPAL
-  // ─────────────────────────────────────────────────────────────
   return (
     <div className={`min-h-screen pb-20 ${textMain}`} style={darkMode ? { backgroundImage: 'url(/icons/background.png)', backgroundSize: 'cover', backgroundPosition: 'center', backgroundAttachment: 'fixed' } : { backgroundColor: '#f3f4f6' }}>
       <SettingsBar />
+      <SealModal />
       
-      {/* Header */}
       <header className={`p-4 text-center border-b ${borderColor} ${darkMode ? 'bg-maya-dark/80 backdrop-blur' : 'bg-white/80 backdrop-blur'}`}>
         <div className={`${textMuted} text-sm`}>
           {today.toLocaleDateString(lang === 'es' ? 'es-MX' : 'en-US', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' })}
@@ -560,7 +570,7 @@ export default function Home() {
         
         {activeTab === 'hoy' && (
           <div className="space-y-6 animate-fade-in">
-            <div className={`${cardBg} p-6 text-center`}>
+            <div className={`${cardBg} p-6 text-center cursor-pointer hover:scale-[1.02] transition`} onClick={() => setSelectedSeal(todaySello)}>
               <div className="flex justify-center mb-4">
                 <SealIcon icon={todaySello.icon} size={96} className="glyph-glow" />
               </div>
@@ -617,7 +627,7 @@ export default function Home() {
 
         {activeTab === 'mikin' && myOraculo && mySello && myTono && (
           <div className="space-y-6 animate-fade-in">
-            <div className={`${cardBg} p-6 text-center`}>
+            <div className={`${cardBg} p-6 text-center cursor-pointer hover:scale-[1.02] transition`} onClick={() => setSelectedSeal(mySello)}>
               <div className="flex justify-center mb-4">
                 <SealIcon icon={mySello.icon} size={96} className="glyph-glow" />
               </div>
@@ -656,17 +666,17 @@ export default function Home() {
                 <div>
                   <div className={`p-4 ${darkMode ? 'bg-maya-dark/50' : 'bg-gray-50'} rounded-lg`}>
                     <div className="flex items-center justify-center gap-4 mb-3">
-                      <div className="text-center">
+                      <div className="text-center cursor-pointer" onClick={() => setSelectedSeal(mySello)}>
                         <SealIcon icon={mySello?.icon} size={40} />
                         <div className={`text-xs ${textMuted}`}>{lang === 'es' ? 'Tú' : 'You'}</div>
                       </div>
                       <div className="text-maya-gold text-2xl">💕</div>
-                      <div className="text-center">
+                      <div className="text-center cursor-pointer" onClick={() => setSelectedSeal(compatResult.otherSello)}>
                         <SealIcon icon={compatResult.otherSello.icon} size={40} />
                         <div className={`text-xs ${textMuted}`}>Kin {compatResult.otherKin}</div>
                       </div>
                       <div className={textMuted}>=</div>
-                      <div className="text-center">
+                      <div className="text-center cursor-pointer" onClick={() => setSelectedSeal(compatResult.selloCombinado)}>
                         <SealIcon icon={compatResult.selloCombinado.icon} size={40} className="glyph-glow" />
                         <div className="text-xs text-maya-jade">Kin {compatResult.kinCombinado}</div>
                       </div>
@@ -688,10 +698,11 @@ export default function Home() {
               )}
             </div>
             <div className={`${cardBg} p-4`}>
-              <h3 className="text-maya-gold font-bold mb-4">{t.seals20}</h3>
+              <h3 className="text-maya-gold font-bold mb-2">{t.seals20}</h3>
+              <p className={`${textMuted} text-xs mb-4`}>{t.tapToLearn}</p>
               <div className="grid grid-cols-4 gap-2">
                 {sellos.map((sello, i) => (
-                  <div key={i} className={`${COLORES[sello.color as keyof typeof COLORES].bg} p-2 rounded text-center`}>
+                  <div key={i} className={`${COLORES[sello.color as keyof typeof COLORES].bg} p-2 rounded text-center cursor-pointer hover:scale-105 transition`} onClick={() => setSelectedSeal(sello)}>
                     <SealIcon icon={sello.icon} size={32} />
                     <div className={`text-xs ${textMain} mt-1`}>{sello.nombre}</div>
                   </div>
