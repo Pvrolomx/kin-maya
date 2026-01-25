@@ -309,7 +309,8 @@ export default function Home() {
     const saved = localStorage.getItem('kin-birthdate');
     const savedLang = localStorage.getItem('kin-lang') as 'es' | 'en';
     const savedDark = localStorage.getItem('kin-dark');
-    if (saved) { setBirthDate(saved); setShowOnboarding(false); }
+    if (saved) { setBirthDate(saved); setShowOnboarding(false);
+    setActiveTab('mikin'); }
     if (savedLang) setLang(savedLang);
     if (savedDark !== null) setDarkMode(savedDark === 'true');
   }, []);
@@ -339,6 +340,7 @@ export default function Home() {
     localStorage.setItem('kin-birthdate', dateStr);
     setBirthDate(dateStr);
     setShowOnboarding(false);
+    setActiveTab('mikin');
   };
 
   const today = new Date();
