@@ -761,7 +761,7 @@ export default function Home() {
           <div className={`${cardBg} rounded-2xl p-6 max-w-sm w-full text-center`}>
             <div className="text-4xl mb-4">✨</div>
             <h3 className={`${textMain} text-xl font-bold mb-2`}>{t.usageLimit}</h3>
-            <p className={`${textSub} text-sm mb-6`}>{t.usageLimitDesc}</p>
+            <p className={`${textMuted} text-sm mb-6`}>{t.usageLimitDesc}</p>
             <a 
               href="https://buymeacoffee.com/duendes" 
               target="_blank"
@@ -772,7 +772,7 @@ export default function Home() {
             </a>
             <button 
               onClick={() => setShowDonationModal(false)}
-              className={`w-full py-2 ${textSub} text-sm`}
+              className={`w-full py-2 ${textMuted} text-sm`}
             >
               {t.maybeLater}
             </button>
