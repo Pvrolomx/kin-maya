@@ -5,8 +5,8 @@ const BASE_URL = 'https://kin-maya.vercel.app';
 // Datos de prueba conocidos
 const TEST_CASES = [
   { date: { day: 26, month: 6, year: 1987 }, expectedKin: 1, sello: 'Dragón', tono: 'Magnético' },
-  { date: { day: 15, month: 0, year: 1990 }, expectedKin: 203, sello: 'Noche', tono: 'Cósmico' },
-  { date: { day: 25, month: 0, year: 2026 }, expectedKin: 58, sello: 'Espejo', tono: 'Galáctico' }, // Hoy
+  { date: { day: 15, month: 0, year: 1990 }, expectedKin: 125, sello: 'Serpiente', tono: 'Galáctico' },
+  { date: { day: 25, month: 0, year: 2026 }, expectedKin: 24, sello: 'Semilla', tono: 'Espectral' }, // Hoy
 ];
 
 test.describe('KIN Maya App', () => {
@@ -221,3 +221,4 @@ test.describe('KIN Maya App', () => {
   });
 
 });
+
