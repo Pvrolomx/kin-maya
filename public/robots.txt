@@ -1,0 +1,9 @@
+# KIN Maya - robots.txt
+User-agent: *
+Allow: /
+
+# Sitemap
+Sitemap: https://kin-maya.duendes.app/sitemap.xml
+
+# Bloquear rutas de API
+Disallow: /api/
