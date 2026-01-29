@@ -51,6 +51,11 @@ const TRANSLATIONS = {
     born: 'Nacido el',
     close: 'Cerrar',
     tapToLearn: 'Toca un sello para ver su significado',
+    usageLimit: '¡Gracias por usar KIN!',
+    usageLimitDesc: 'Has disfrutado de 5 interpretaciones gratuitas. Para continuar usando el oráculo AI, considera hacer una donación.',
+    donate: 'Donar ☕',
+    maybeLater: 'Quizás después',
+    freeUsesLeft: 'interpretaciones gratuitas restantes',
   },
   en: {
     title: 'KIN',
@@ -96,6 +101,11 @@ const TRANSLATIONS = {
     born: 'Born on',
     close: 'Close',
     tapToLearn: 'Tap a seal to learn its meaning',
+    usageLimit: 'Thanks for using KIN!',
+    usageLimitDesc: 'You have enjoyed 5 free interpretations. To continue using the AI oracle, consider making a donation.',
+    donate: 'Donate ☕',
+    maybeLater: 'Maybe later',
+    freeUsesLeft: 'free interpretations left',
   }
 };
 
@@ -296,6 +306,9 @@ export default function Home() {
   const [selectedDay, setSelectedDay] = useState<number | null>(null);
   
   const [dailyInterpretation, setDailyInterpretation] = useState<string | null>(null);
+  const [aiUsageCount, setAiUsageCount] = useState(0);
+  const [showDonationModal, setShowDonationModal] = useState(false);
+  const FREE_USES_LIMIT = 5;
   const [loadingDaily, setLoadingDaily] = useState(false);
   
   const [compatYear, setCompatYear] = useState(1990);
@@ -368,6 +381,11 @@ export default function Home() {
 
   const fetchDailyInterpretation = async () => {
     if (!myKin || loadingDaily) return;
+    // Check usage limit
+    if (aiUsageCount >= FREE_USES_LIMIT) {
+      setShowDonationModal(true);
+      return;
+    }
     setLoadingDaily(true);
     try {
       const res = await fetch('/api/interpret', {
@@ -387,6 +405,10 @@ export default function Home() {
       });
       const data = await res.json();
       setDailyInterpretation(data.interpretation);
+      // Increment usage counter
+      const newCount = aiUsageCount + 1;
+      setAiUsageCount(newCount);
+      localStorage.setItem('kin-maya-ai-usage', newCount.toString());
     } catch (e) {
       setDailyInterpretation(lang === 'es' ? 'No se pudo conectar con el oráculo.' : 'Could not connect to the oracle.');
     }
@@ -732,6 +754,31 @@ export default function Home() {
             </div>
           </div>
         )}
+
+      {/* Donation Modal */}
+      {showDonationModal && (
+        <div className="fixed inset-0 bg-black/70 flex items-center justify-center z-50 p-4">
+          <div className={`${cardBg} rounded-2xl p-6 max-w-sm w-full text-center`}>
+            <div className="text-4xl mb-4">✨</div>
+            <h3 className={`${textMain} text-xl font-bold mb-2`}>{t.usageLimit}</h3>
+            <p className={`${textSub} text-sm mb-6`}>{t.usageLimitDesc}</p>
+            <a 
+              href="https://buymeacoffee.com/duendes" 
+              target="_blank"
+              rel="noopener noreferrer"
+              className="block w-full py-3 rounded-lg bg-gradient-to-r from-maya-gold to-maya-jade text-white font-medium mb-3"
+            >
+              {t.donate}
+            </a>
+            <button 
+              onClick={() => setShowDonationModal(false)}
+              className={`w-full py-2 ${textSub} text-sm`}
+            >
+              {t.maybeLater}
+            </button>
+          </div>
+        </div>
+      )}
       </main>
 
       <nav className={`fixed bottom-0 left-0 right-0 ${darkMode ? 'bg-maya-dark/95' : 'bg-white/95'} backdrop-blur border-t ${borderColor}`}>
