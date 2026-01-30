@@ -56,6 +56,8 @@ const TRANSLATIONS = {
     donate: 'Donar ☕',
     maybeLater: 'Quizás después',
     freeUsesLeft: 'interpretaciones gratuitas restantes',
+    alreadyDonated: '¡Ya doné! 🎉',
+    thanksForDonating: '¡Gracias por tu apoyo! Tienes 10 usos más.',
   },
   en: {
     title: 'KIN',
@@ -106,6 +108,8 @@ const TRANSLATIONS = {
     donate: 'Donate ☕',
     maybeLater: 'Maybe later',
     freeUsesLeft: 'free interpretations left',
+    alreadyDonated: 'I already donated! 🎉',
+    thanksForDonating: 'Thanks for your support! You have 10 more uses.',
   }
 };
 
@@ -308,6 +312,7 @@ export default function Home() {
   const [dailyInterpretation, setDailyInterpretation] = useState<string | null>(null);
   const [aiUsageCount, setAiUsageCount] = useState(0);
   const [showDonationModal, setShowDonationModal] = useState(false);
+  const [showThanksMessage, setShowThanksMessage] = useState(false);
   const FREE_USES_LIMIT = 5;
   const [loadingDaily, setLoadingDaily] = useState(false);
   
@@ -453,6 +458,16 @@ export default function Home() {
   };
 
   const clearInterpretation = () => setDailyInterpretation(null);
+
+  const handleAlreadyDonated = () => {
+    // Give 10 more uses
+    const newCount = Math.max(0, aiUsageCount - 10);
+    setAiUsageCount(newCount);
+    localStorage.setItem('kin-maya-ai-usage', newCount.toString());
+    setShowDonationModal(false);
+    setShowThanksMessage(true);
+    setTimeout(() => setShowThanksMessage(false), 3000);
+  };
   const clearCompatibility = () => setCompatResult(null);
 
   const textMain = darkMode ? 'text-white' : 'text-gray-900';
@@ -755,6 +770,13 @@ export default function Home() {
           </div>
         )}
 
+      {/* Thanks Message Toast */}
+      {showThanksMessage && (
+        <div className="fixed top-4 left-1/2 -translate-x-1/2 z-50 px-6 py-3 rounded-full bg-maya-jade text-white font-medium shadow-lg animate-fade-in">
+          {t.thanksForDonating}
+        </div>
+      )}
+
       {/* Donation Modal */}
       {showDonationModal && (
         <div className="fixed inset-0 bg-black/70 flex items-center justify-center z-50 p-4">
@@ -770,6 +792,12 @@ export default function Home() {
             >
               {t.donate}
             </a>
+            <button 
+              onClick={handleAlreadyDonated}
+              className="w-full py-2 rounded-lg border border-maya-gold text-maya-gold font-medium mb-3 hover:bg-maya-gold/10 transition"
+            >
+              {t.alreadyDonated}
+            </button>
             <button 
               onClick={() => setShowDonationModal(false)}
               className={`w-full py-2 ${textMuted} text-sm`}
