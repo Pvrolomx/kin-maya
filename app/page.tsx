@@ -56,7 +56,11 @@ const TRANSLATIONS = {
     donate: 'Donar ☕',
     maybeLater: 'Quizás después',
     freeUsesLeft: 'interpretaciones gratuitas restantes',
-    alreadyDonated: '¡Ya doné! 🎉',
+    alreadyDonated: 'Tengo código 🎁',
+    enterCode: 'Ingresa tu código',
+    codePlaceholder: 'Ej: MAYA-ENERO',
+    invalidCode: 'Código inválido. Verifica e intenta de nuevo.',
+    verifyCode: 'Verificar',
     thanksForDonating: '¡Gracias por tu apoyo! Tienes 10 usos más.',
   },
   en: {
@@ -108,7 +112,11 @@ const TRANSLATIONS = {
     donate: 'Donate ☕',
     maybeLater: 'Maybe later',
     freeUsesLeft: 'free interpretations left',
-    alreadyDonated: 'I already donated! 🎉',
+    alreadyDonated: 'I have a code 🎁',
+    enterCode: 'Enter your code',
+    codePlaceholder: 'Ex: MAYA-JANUARY',
+    invalidCode: 'Invalid code. Please check and try again.',
+    verifyCode: 'Verify',
     thanksForDonating: 'Thanks for your support! You have 10 more uses.',
   }
 };
@@ -313,6 +321,9 @@ export default function Home() {
   const [aiUsageCount, setAiUsageCount] = useState(0);
   const [showDonationModal, setShowDonationModal] = useState(false);
   const [showThanksMessage, setShowThanksMessage] = useState(false);
+  const [showCodeInput, setShowCodeInput] = useState(false);
+  const [donationCode, setDonationCode] = useState('');
+  const [codeError, setCodeError] = useState(false);
   const FREE_USES_LIMIT = 5;
   const [loadingDaily, setLoadingDaily] = useState(false);
   
@@ -460,13 +471,42 @@ export default function Home() {
   const clearInterpretation = () => setDailyInterpretation(null);
 
   const handleAlreadyDonated = () => {
-    // Give 10 more uses
-    const newCount = Math.max(0, aiUsageCount - 10);
-    setAiUsageCount(newCount);
-    localStorage.setItem('kin-maya-ai-usage', newCount.toString());
-    setShowDonationModal(false);
-    setShowThanksMessage(true);
-    setTimeout(() => setShowThanksMessage(false), 3000);
+    setShowCodeInput(true);
+    setCodeError(false);
+  };
+
+  const validateDonationCode = () => {
+    // Códigos válidos: mes actual y anterior en español e inglés
+    const now = new Date();
+    const monthsES = ['ENERO','FEBRERO','MARZO','ABRIL','MAYO','JUNIO','JULIO','AGOSTO','SEPTIEMBRE','OCTUBRE','NOVIEMBRE','DICIEMBRE'];
+    const monthsEN = ['JANUARY','FEBRUARY','MARCH','APRIL','MAY','JUNE','JULY','AUGUST','SEPTEMBER','OCTOBER','NOVEMBER','DECEMBER'];
+    const currentMonth = now.getMonth();
+    const prevMonth = currentMonth === 0 ? 11 : currentMonth - 1;
+    
+    const validCodes = [
+      `MAYA-${monthsES[currentMonth]}`,
+      `MAYA-${monthsES[prevMonth]}`,
+      `MAYA-${monthsEN[currentMonth]}`,
+      `MAYA-${monthsEN[prevMonth]}`,
+      'MAYA-REGALO', // Código especial permanente
+      'MAYA-GIFT',
+    ];
+    
+    const inputCode = donationCode.trim().toUpperCase();
+    
+    if (validCodes.includes(inputCode)) {
+      // Código válido - dar 10 usos más
+      const newCount = Math.max(0, aiUsageCount - 10);
+      setAiUsageCount(newCount);
+      localStorage.setItem('kin-maya-ai-usage', newCount.toString());
+      setShowDonationModal(false);
+      setShowCodeInput(false);
+      setDonationCode('');
+      setShowThanksMessage(true);
+      setTimeout(() => setShowThanksMessage(false), 3000);
+    } else {
+      setCodeError(true);
+    }
   };
   const clearCompatibility = () => setCompatResult(null);
 
@@ -781,29 +821,60 @@ export default function Home() {
       {showDonationModal && (
         <div className="fixed inset-0 bg-black/70 flex items-center justify-center z-50 p-4">
           <div className={`${cardBg} rounded-2xl p-6 max-w-sm w-full text-center`}>
-            <div className="text-4xl mb-4">✨</div>
-            <h3 className={`${textMain} text-xl font-bold mb-2`}>{t.usageLimit}</h3>
-            <p className={`${textMuted} text-sm mb-6`}>{t.usageLimitDesc}</p>
-            <a 
-              href="https://buymeacoffee.com/duendes" 
-              target="_blank"
-              rel="noopener noreferrer"
-              className="block w-full py-3 rounded-lg bg-gradient-to-r from-maya-gold to-maya-jade text-white font-medium mb-3"
-            >
-              {t.donate}
-            </a>
-            <button 
-              onClick={handleAlreadyDonated}
-              className="w-full py-2 rounded-lg border border-maya-gold text-maya-gold font-medium mb-3 hover:bg-maya-gold/10 transition"
-            >
-              {t.alreadyDonated}
-            </button>
-            <button 
-              onClick={() => setShowDonationModal(false)}
-              className={`w-full py-2 ${textMuted} text-sm`}
-            >
-              {t.maybeLater}
-            </button>
+            {!showCodeInput ? (
+              <>
+                <div className="text-4xl mb-4">✨</div>
+                <h3 className={`${textMain} text-xl font-bold mb-2`}>{t.usageLimit}</h3>
+                <p className={`${textMuted} text-sm mb-6`}>{t.usageLimitDesc}</p>
+                <a 
+                  href="https://buymeacoffee.com/duendes" 
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="block w-full py-3 rounded-lg bg-gradient-to-r from-maya-gold to-maya-jade text-white font-medium mb-3"
+                >
+                  {t.donate}
+                </a>
+                <button 
+                  onClick={handleAlreadyDonated}
+                  className="w-full py-2 rounded-lg border border-maya-gold text-maya-gold font-medium mb-3 hover:bg-maya-gold/10 transition"
+                >
+                  {t.alreadyDonated}
+                </button>
+                <button 
+                  onClick={() => setShowDonationModal(false)}
+                  className={`w-full py-2 ${textMuted} text-sm`}
+                >
+                  {t.maybeLater}
+                </button>
+              </>
+            ) : (
+              <>
+                <div className="text-4xl mb-4">🎁</div>
+                <h3 className={`${textMain} text-xl font-bold mb-2`}>{t.enterCode}</h3>
+                <input
+                  type="text"
+                  value={donationCode}
+                  onChange={(e) => { setDonationCode(e.target.value); setCodeError(false); }}
+                  placeholder={t.codePlaceholder}
+                  className={`w-full p-3 rounded-lg mb-3 text-center uppercase ${darkMode ? 'bg-maya-dark border border-maya-gold/30 text-white' : 'bg-gray-100 border border-gray-300 text-gray-900'} focus:outline-none focus:border-maya-gold`}
+                />
+                {codeError && (
+                  <p className="text-red-500 text-sm mb-3">{t.invalidCode}</p>
+                )}
+                <button 
+                  onClick={validateDonationCode}
+                  className="w-full py-3 rounded-lg bg-gradient-to-r from-maya-gold to-maya-jade text-white font-medium mb-3"
+                >
+                  {t.verifyCode}
+                </button>
+                <button 
+                  onClick={() => { setShowCodeInput(false); setCodeError(false); setDonationCode(''); }}
+                  className={`w-full py-2 ${textMuted} text-sm`}
+                >
+                  ← {t.maybeLater}
+                </button>
+              </>
+            )}
           </div>
         </div>
       )}
