@@ -4,8 +4,20 @@
   "description": "Descubre tu energia Maya diaria con el calendario Tzolkin",
   "start_url": "/",
   "display": "standalone",
+  "id": "/",
+  "orientation": "portrait",
+  "categories": ["lifestyle", "entertainment"],
+  "prefer_related_applications": false,
   "background_color": "#1a1a2e",
   "theme_color": "#1a1a2e",
+  "screenshots": [
+    {
+      "src": "/screenshots/screen1.png",
+      "sizes": "1080x1920",
+      "type": "image/png",
+      "form_factor": "narrow"
+    }
+  ],
   "icons": [
     {
       "src": "/icon-192.png",
