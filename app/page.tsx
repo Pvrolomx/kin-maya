@@ -319,6 +319,7 @@ export default function Home() {
   
   const [dailyInterpretation, setDailyInterpretation] = useState<string | null>(null);
   const [aiUsageCount, setAiUsageCount] = useState(0);
+  const [bonusUses, setBonusUses] = useState(0);
   const [showDonationModal, setShowDonationModal] = useState(false);
   const [showThanksMessage, setShowThanksMessage] = useState(false);
   const [showCodeInput, setShowCodeInput] = useState(false);
@@ -343,9 +344,13 @@ export default function Home() {
     const saved = localStorage.getItem('kin-birthdate');
     const savedLang = localStorage.getItem('kin-lang') as 'es' | 'en';
     const savedDark = localStorage.getItem('kin-dark');
+    const savedUsage = localStorage.getItem('kin-maya-ai-usage');
+    const savedBonus = localStorage.getItem('kin-maya-bonus');
     if (saved) { setBirthDate(saved); setShowOnboarding(false); }
     if (savedLang) setLang(savedLang);
     if (savedDark !== null) setDarkMode(savedDark === 'true');
+    if (savedUsage !== null) setAiUsageCount(parseInt(savedUsage, 10) || 0);
+    if (savedBonus !== null) setBonusUses(parseInt(savedBonus, 10) || 0);
   }, []);
 
   const toggleLang = () => {
@@ -397,8 +402,8 @@ export default function Home() {
 
   const fetchDailyInterpretation = async () => {
     if (!myKin || loadingDaily) return;
-    // Check usage limit
-    if (aiUsageCount >= FREE_USES_LIMIT) {
+    // Check usage limit (free uses + any bonus unlocked with a code)
+    if (aiUsageCount >= FREE_USES_LIMIT + bonusUses) {
       setShowDonationModal(true);
       return;
     }
@@ -495,10 +500,10 @@ export default function Home() {
     const inputCode = donationCode.trim().toUpperCase();
     
     if (validCodes.includes(inputCode)) {
-      // Código válido - dar 10 usos más
-      const newCount = Math.max(0, aiUsageCount - 10);
-      setAiUsageCount(newCount);
-      localStorage.setItem('kin-maya-ai-usage', newCount.toString());
+      // Código válido - dar 10 usos más (se suman al tope, no resetean el contador)
+      const newBonus = bonusUses + 10;
+      setBonusUses(newBonus);
+      localStorage.setItem('kin-maya-bonus', newBonus.toString());
       setShowDonationModal(false);
       setShowCodeInput(false);
       setDonationCode('');
@@ -826,8 +831,8 @@ export default function Home() {
                 <div className="text-4xl mb-4">✨</div>
                 <h3 className={`${textMain} text-xl font-bold mb-2`}>{t.usageLimit}</h3>
                 <p className={`${textMuted} text-sm mb-6`}>{t.usageLimitDesc}</p>
-                <a 
-                  href="https://buymeacoffee.com/duendes" 
+                <a
+                  href="https://ko-fi.com/duendes"
                   target="_blank"
                   rel="noopener noreferrer"
                   className="block w-full py-3 rounded-lg bg-gradient-to-r from-maya-gold to-maya-jade text-white font-medium mb-3"
