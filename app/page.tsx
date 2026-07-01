@@ -832,7 +832,7 @@ export default function Home() {
                 <h3 className={`${textMain} text-xl font-bold mb-2`}>{t.usageLimit}</h3>
                 <p className={`${textMuted} text-sm mb-6`}>{t.usageLimitDesc}</p>
                 <a
-                  href="https://ko-fi.com/duendes"
+                  href="https://ko-fi.com/duendesapp"
                   target="_blank"
                   rel="noopener noreferrer"
                   className="block w-full py-3 rounded-lg bg-gradient-to-r from-maya-gold to-maya-jade text-white font-medium mb-3"
