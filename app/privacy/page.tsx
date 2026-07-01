@@ -20,6 +20,7 @@ export default function Privacy() {
 
       <h2>Servicios de IA</h2>
       <p>Las consultas al oráculo se procesan mediante servicios de IA. El texto de tu pregunta se envía de forma anónima y no se asocia con tu identidad.</p>
+      <p>Para prevenir abuso, el servidor puede procesar temporalmente tu dirección IP; no se almacena de forma permanente ni se vincula a tu identidad.</p>
 
       <h2>Contacto</h2>
       <p>Preguntas sobre privacidad: <a href="mailto:privacy@duendes.app" style={{ color: '#d4af37' }}>privacy@duendes.app</a></p>
